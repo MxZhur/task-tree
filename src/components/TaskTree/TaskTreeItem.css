@@ -3,11 +3,11 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding: 3px;
+  padding: 4px;
 }
 
 .task-tree-item-active {
-  border-radius: 5px;
+  border-radius: 10px;
   background-color: var(--bs-primary);
   color: var(--bs-light);
 }
@@ -30,6 +30,14 @@
 
 .task-tree-item-checkmark-container {
   width: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.task-tree-item-arrow-container {
+  height: 1rem;
+  width: 1rem;
   display: flex;
   justify-content: center;
   align-items: center;

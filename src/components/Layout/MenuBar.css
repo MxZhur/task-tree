@@ -1,0 +1,4 @@
+.nav .nav-item .nav-link,
+.nav .nav-item.dropdown .dropdown-item {
+  font-size: 0.75rem;
+}

@@ -38,6 +38,12 @@
         "removeFile": false,
         "renameFile": false,
         "writeFile": true
+      },
+      "process": {
+        "all": false,
+        "exit": true,
+        "relaunch": false,
+        "relaunchDangerousAllowSymlinkMacos": false
       }
     },
     "windows": [

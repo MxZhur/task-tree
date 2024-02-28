@@ -1,10 +1,11 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
+import MenuBar from "./MenuBar";
 
 const Layout: React.FC = () => {
   return (
     <>
-      <div>Layout</div>
+      <MenuBar />
       <Outlet />
     </>
   );

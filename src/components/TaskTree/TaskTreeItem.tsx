@@ -10,6 +10,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { ProgressBar } from "react-bootstrap";
 import { setSelectedTask } from "../../store/selectedTaskSlice";
+import PriorityIndicator from "../TaskDetailsView/PriorityIndicator";
 
 interface TaskTreeItemProps {
   task: Task;
@@ -72,6 +73,9 @@ const TaskTreeItem: React.FC<TaskTreeItemProps> = ({
         <div className="task-tree-item-title unselectable">
           {childTasks.length > 0 ? expandButton : expandButtonPlaceHolder}
           <div style={{ width: "5px" }}></div>
+          <div style={{fontSize: '0.75rem'}}>
+            <PriorityIndicator priority={task.priority} />
+          </div>
           <div className="task-tree-item-name">{task.name}</div>
         </div>
         {task!.progress! < 100 ? (

@@ -12,6 +12,20 @@ export type Task = {
   dependencyTasks: string[];
 };
 
+export const TASK_PRIORITIES = {
+  'critical': 1,
+  'high': 2,
+  'medium': 3,
+  'low': 4,
+  'none': 5,
+};
+
+export const TASK_DIFFICULTIES = {
+  'hard': 2,
+  'normal': 1,
+  'easy': 0.5,
+};
+
 export type TaskFormFields = {
   name: string;
   description: string;
@@ -49,43 +63,54 @@ const initialState: TasksState = {
       description: "",
       priority: 1,
       progress: 50,
-      difficulty: 1,
+      difficulty: TASK_DIFFICULTIES.easy,
       parentTaskId: null,
-      childTasks: ['wsx', 'qaz'],
+      childTasks: ['wsx', 'qaz', 'rfv'],
       dependencyTasks: [],
     },
     {
       id: "asd",
       name: "Asdfgh",
       description: "",
-      priority: 1,
+      priority: 2,
       progress: 100,
-      difficulty: 1,
+      difficulty: TASK_DIFFICULTIES.normal,
       parentTaskId: null,
       childTasks: ['edc'],
-      dependencyTasks: [],
+      dependencyTasks: ['qwe'],
     },
     {
       id: "qaz",
       name: "Qazaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-      description: "",
-      priority: 1,
+      description: "Qazaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      priority: 3,
       progress: 50,
-      difficulty: 1,
+      difficulty: TASK_DIFFICULTIES.easy,
       parentTaskId: 'qwe',
       childTasks: [],
-      dependencyTasks: [],
+      dependencyTasks: ['wsx'],
     },
     {
       id: "wsx",
       name: "Wsx",
       description: "",
-      priority: 1,
+      priority: 4,
       progress: 50,
-      difficulty: 1,
+      difficulty: TASK_DIFFICULTIES.easy,
       parentTaskId: 'qwe',
       childTasks: [],
       dependencyTasks: [],
+    },
+    {
+      id: "rfv",
+      name: "Rfv",
+      description: "",
+      priority: 5,
+      progress: 10,
+      difficulty: 1,
+      parentTaskId: 'qwe',
+      childTasks: [],
+      dependencyTasks: ['wsx', 'qaz'],
     },
     {
       id: "edc",
@@ -93,7 +118,7 @@ const initialState: TasksState = {
       description: "",
       priority: 1,
       progress: 100,
-      difficulty: 1,
+      difficulty: TASK_DIFFICULTIES.hard,
       parentTaskId: 'asd',
       childTasks: [],
       dependencyTasks: [],

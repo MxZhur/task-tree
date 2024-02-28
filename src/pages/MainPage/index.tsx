@@ -1,5 +1,5 @@
 import React from "react";
-import { TaskTree } from "../../components";
+import { TaskTree, TaskDetailsView } from "../../components";
 import { Col, Container, Row } from "react-bootstrap";
 
 const MainPage: React.FC = () => {
@@ -7,8 +7,11 @@ const MainPage: React.FC = () => {
     <div className="full-height" style={{ minHeight: "100%" }}>
       <Container className="full-height" style={{ maxWidth: "unset" }}>
         <Row className="full-height">
-          <Col className="full-height">
-            <TaskTree></TaskTree>
+          <Col xs={5} className="full-height">
+            <TaskTree />
+          </Col>
+          <Col xs={7}>
+            <TaskDetailsView />
           </Col>
         </Row>
       </Container>

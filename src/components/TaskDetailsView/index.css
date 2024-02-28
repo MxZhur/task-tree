@@ -1,0 +1,24 @@
+.task-details-view-container {
+  border: 1px solid gray;
+  border-radius: 10px;
+
+  background-color: white;
+  padding: 10px;
+
+  max-height: 50%;
+  height: 50%;
+  width: auto;
+
+  overflow-y: scroll;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+
+  word-wrap: break-word;
+}
+
+.task-details-name {
+  font-size: 1.1rem;
+  font-weight: bold;
+  line-height: 1.3rem;
+  margin-bottom: 3px;
+}

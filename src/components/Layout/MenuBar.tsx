@@ -28,16 +28,16 @@ const MenuBar: React.FC = () => {
   return (
     <Nav className="bg-light">
       <Dropdown as={NavItem}>
-        <Dropdown.Toggle as={NavLink}>File</Dropdown.Toggle>
+        <Dropdown.Toggle as={NavLink} className="unselectable">File</Dropdown.Toggle>
         <Dropdown.Menu>
-          <Dropdown.Item onClick={onFileNewClicked}>New</Dropdown.Item>
-          <Dropdown.Item onClick={onFileOpenClicked}>Open...</Dropdown.Item>
-          <Dropdown.Item onClick={onFileSaveClicked}>Save</Dropdown.Item>
-          <Dropdown.Item onClick={onFileSaveAsClicked}>
+          <Dropdown.Item className="unselectable" onClick={onFileNewClicked}>New</Dropdown.Item>
+          <Dropdown.Item className="unselectable" onClick={onFileOpenClicked}>Open...</Dropdown.Item>
+          <Dropdown.Item className="unselectable" onClick={onFileSaveClicked}>Save</Dropdown.Item>
+          <Dropdown.Item className="unselectable" onClick={onFileSaveAsClicked}>
             Save As...
           </Dropdown.Item>
           <Dropdown.Divider />
-          <Dropdown.Item onClick={onFileQuitClicked}>Quit</Dropdown.Item>
+          <Dropdown.Item className="unselectable" onClick={onFileQuitClicked}>Quit</Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
     </Nav>

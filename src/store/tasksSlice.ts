@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction, nanoid, Draft } from "@reduxjs/toolkit";
 
-type Task = {
+export type Task = {
   id: string;
   name: string;
   description: string;
@@ -12,7 +12,7 @@ type Task = {
   dependencyTasks: string[];
 };
 
-type TaskFormFields = {
+export type TaskFormFields = {
   name: string;
   description: string;
   priority: number;
@@ -23,45 +23,78 @@ type TaskFormFields = {
   blockedTasks: string[];
 };
 
-type UpdateTaskFormFields = TaskFormFields & { id: string };
-type UpdateProgressFormFields = {
+export type UpdateTaskFormFields = TaskFormFields & { id: string };
+export type UpdateProgressFormFields = {
   id: string;
   progress: number;
 };
 
-type MoveTaskFormFields = {
+export type MoveTaskFormFields = {
   id: string;
   parentId: string | null;
   beforeTaskId: string | null;
 };
 
-type TasksState = {
+export type TasksState = {
   topLevelIDs: string[];
   list: Task[];
 };
 
 const initialState: TasksState = {
-  topLevelIDs: ['qwe', 'asd'],
+  topLevelIDs: ["qwe", "asd"],
   list: [
     {
-      id: 'qwe',
-      name: 'Qwerty',
-      description: '',
+      id: "qwe",
+      name: "Qwerty",
+      description: "",
       priority: 1,
       progress: 50,
       difficulty: 1,
       parentTaskId: null,
+      childTasks: ['wsx', 'qaz'],
+      dependencyTasks: [],
+    },
+    {
+      id: "asd",
+      name: "Asdfgh",
+      description: "",
+      priority: 1,
+      progress: 50,
+      difficulty: 1,
+      parentTaskId: null,
+      childTasks: ['edc'],
+      dependencyTasks: [],
+    },
+    {
+      id: "qaz",
+      name: "Qaz",
+      description: "",
+      priority: 1,
+      progress: 50,
+      difficulty: 1,
+      parentTaskId: 'qwe',
       childTasks: [],
       dependencyTasks: [],
     },
     {
-      id: 'asd',
-      name: 'Asdfgh',
-      description: '',
+      id: "wsx",
+      name: "Wsx",
+      description: "",
       priority: 1,
       progress: 50,
       difficulty: 1,
-      parentTaskId: null,
+      parentTaskId: 'qwe',
+      childTasks: [],
+      dependencyTasks: [],
+    },
+    {
+      id: "edc",
+      name: "Edc",
+      description: "",
+      priority: 1,
+      progress: 50,
+      difficulty: 1,
+      parentTaskId: 'asd',
       childTasks: [],
       dependencyTasks: [],
     },
@@ -428,8 +461,6 @@ export const { addTask, updateTask, updateProgress, moveTask, deleteTask } =
 //       .map((tID) => state.list.find((t) => t.id === tID) ?? null)
 //       .filter((e) => e !== null);
 // }
-
-
 
 // - Find all child tasks by parent task ID
 

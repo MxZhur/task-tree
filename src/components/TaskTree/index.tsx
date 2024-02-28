@@ -1,5 +1,7 @@
 import React from "react";
 import { useAppSelector } from "../../store/hooks";
+import { TaskTreeItem } from "./TaskTreeItem";
+import "./index.css";
 
 const TaskTree: React.FC = () => {
   const tasks = useAppSelector((state) => {
@@ -8,11 +10,13 @@ const TaskTree: React.FC = () => {
       .filter((e) => e !== null);
   });
 
-  const content = tasks
-    .filter((e) => e !== null)
-    .map((t) => <p key={t?.id}>{t?.name}</p>);
-
-  return <div>{content}</div>;
+  return (
+    <div className="task-tree-container">
+      {tasks.map((t) => (
+        <TaskTreeItem key={t?.id} task={t!} />
+      ))}
+    </div>
+  );
 };
 
 export { TaskTree };

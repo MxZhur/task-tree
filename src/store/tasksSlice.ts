@@ -370,6 +370,8 @@ const tasksSlice = createSlice({
       movedTask.parentTaskId = payload.parentId;
 
       if (oldParentTaskId !== payload.parentId) {
+        movedTask.dependencyTasks = [];
+
         // Update old parent's child IDs
 
         if (oldParentTaskId !== null) {

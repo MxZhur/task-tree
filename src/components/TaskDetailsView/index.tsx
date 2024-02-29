@@ -14,6 +14,7 @@ import {
 import PriorityIndicator from "./PriorityIndicator";
 import DifficultyIndicator from "./DifficultyIndicator";
 import DependencyTasksList from "./DependencyTasksList";
+import { Link } from "react-router-dom";
 
 const TaskDetailsView: React.FC = () => {
   const task = useAppSelector((state) =>
@@ -36,14 +37,6 @@ const TaskDetailsView: React.FC = () => {
   });
 
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
-
-  const handleEditClick = () => {
-    // TODO: Implement
-  };
-
-  const handleMoveClick = () => {
-    // TODO: Implement
-  };
 
   if (task === undefined) {
     return (
@@ -79,13 +72,17 @@ const TaskDetailsView: React.FC = () => {
             alignItems: "center",
           }}
         >
-          <Button size="sm" variant="success" onClick={handleEditClick}>
-            <FontAwesomeIcon icon={faEdit} /> Edit
-          </Button>
+          <Link to={"/edit/" + task.id}>
+            <Button size="sm" variant="success">
+              <FontAwesomeIcon icon={faEdit} /> Edit
+            </Button>
+          </Link>
           &nbsp;
-          <Button size="sm" variant="primary" onClick={handleMoveClick}>
-            <FontAwesomeIcon icon={faShare} /> Move
-          </Button>
+          <Link to={"/move/" + task.id}>
+            <Button size="sm" variant="primary">
+              <FontAwesomeIcon icon={faShare} /> Move
+            </Button>
+          </Link>
         </div>
       </div>
 

@@ -11,6 +11,7 @@ import {
 import { ProgressBar } from "react-bootstrap";
 import { setSelectedTask } from "../../store/selectedTaskSlice";
 import PriorityIndicator from "../TaskDetailsView/PriorityIndicator";
+import { useNavigate } from "react-router-dom";
 
 interface TaskTreeItemProps {
   task: Task;
@@ -21,15 +22,23 @@ interface TaskTreeItemProps {
 const TaskTreeItem: React.FC<TaskTreeItemProps> = ({
   task,
   collapsedItems,
-  toggleItemExpansion
+  toggleItemExpansion,
 }) => {
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  const childTasks = useAppSelector((state) =>
-    task.childTasks
+  const isExpanded =
+    collapsedItems !== undefined && !collapsedItems?.includes(task.id);
+
+  const childTasks = useAppSelector((state) => {
+    if (!isExpanded) {
+      return [];
+    }
+
+    return task.childTasks
       .map((tID) => state.tasks.list.find((t) => t.id === tID))
-      .filter((e) => e !== undefined)
-  );
+      .filter((e) => e !== undefined);
+  });
 
   const isSelected = useAppSelector(
     (state) => state.selectedTask.taskId === task.id
@@ -40,21 +49,20 @@ const TaskTreeItem: React.FC<TaskTreeItemProps> = ({
   };
 
   const handleDoubleClick = () => {
-    // TODO: Go to edit form
+    navigate("/edit/" + task.id);
   };
 
   const handleArrowClick = () => {
     toggleItemExpansion(task.id);
-  }
-
-  const isExpanded =
-    collapsedItems !== undefined && !collapsedItems?.includes(task.id);
+  };
 
   const expandButton = (
     <div className="task-tree-item-arrow-container">
-      <FontAwesomeIcon icon={isExpanded ? faChevronDown : faChevronRight} onClick={handleArrowClick} />
+      <FontAwesomeIcon
+        icon={isExpanded ? faChevronDown : faChevronRight}
+        onClick={handleArrowClick}
+      />
     </div>
-
   );
   const expandButtonPlaceHolder = (
     <div className="task-tree-item-arrow-container" />
@@ -73,7 +81,7 @@ const TaskTreeItem: React.FC<TaskTreeItemProps> = ({
         <div className="task-tree-item-title unselectable">
           {childTasks.length > 0 ? expandButton : expandButtonPlaceHolder}
           <div style={{ width: "5px" }}></div>
-          <div style={{fontSize: '0.75rem'}}>
+          <div style={{ fontSize: "0.75rem" }}>
             <PriorityIndicator priority={task.priority} />
           </div>
           <div className="task-tree-item-name">{task.name}</div>
@@ -96,7 +104,7 @@ const TaskTreeItem: React.FC<TaskTreeItemProps> = ({
           </div>
         )}
       </div>
-      {(isExpanded && childTasks.length > 0) && (
+      {isExpanded && childTasks.length > 0 && (
         <div className="task-tree-child-container">
           {childTasks.map((t) => (
             <TaskTreeItem

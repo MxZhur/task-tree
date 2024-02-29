@@ -14,9 +14,12 @@ import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { TASK_DIFFICULTIES, TASK_PRIORITIES } from "../../store/tasksSlice";
 import PriorityIndicator from "../../components/TaskDetailsView/PriorityIndicator";
 import DifficultyIndicator from "../../components/TaskDetailsView/DifficultyIndicator";
+import { TaskPicker } from "../../components";
 
 const TaskForm: React.FC = () => {
   const navigate = useNavigate();
+
+  const goBack = () => navigate(-1);
 
   const { taskId } = useParams();
 
@@ -28,24 +31,72 @@ const TaskForm: React.FC = () => {
     return state.tasks.list.find((t) => t.id === taskId);
   });
 
-  const goBack = () => navigate(-1);
+  const neighborTasksIds = useAppSelector((state) => {
+    if (task === undefined) {
+      return [];
+    }
+
+    if (task.parentTaskId !== null) {
+      const parentTask = state.tasks.list.find(
+        (t) => t.id === task.parentTaskId
+      );
+
+      if (parentTask === undefined) {
+        return state.tasks.topLevelIDs;
+      } else {
+        return parentTask.childTasks;
+      }
+    } else {
+      return state.tasks.topLevelIDs;
+    }
+  });
+
+  const defaultBlockedTasksIds = useAppSelector((state) => {
+    return state.tasks.list
+      .filter((t) => t.dependencyTasks.includes(task?.id ?? ""))
+      .map((t) => t.id);
+  });
+
+  // const findTask = (taskId: string) => {
+  //   return allTasks.find((t) => t.id === taskId);
+  // };
+
+  // const findTasks = (taskIds: string[]) => {
+  //   return allTasks.filter((t) => taskIds.includes(t.id));
+  // };
+
+  // const topLevelTasksIDs = useAppSelector((state) => {
+  //   return state.tasks.topLevelIDs;
+  // });
 
   const [name, setName] = useState<string>(task ? task.name : "");
   const [description, setDescription] = useState<string>(
-    task ? task.description : ""
+    task !== undefined ? task.description : ""
   );
   const [progress, setProgress] = useState<number>(
-    task?.progress ? task.progress : 0
+    task !== undefined && task?.progress ? task.progress : 0
   );
   const [priority, setPriority] = useState<number>(
-    task?.priority ? task.priority : TASK_PRIORITIES.medium
+    task !== undefined && task?.priority
+      ? task.priority
+      : TASK_PRIORITIES.medium
   );
   const [difficulty, setDifficulty] = useState<number>(
-    task?.difficulty ? task.difficulty : TASK_DIFFICULTIES.normal
+    task !== undefined && task?.difficulty
+      ? task.difficulty
+      : TASK_DIFFICULTIES.normal
   );
 
   const [parentTaskId, setParentTaskId] = useState<string | null>(
     task !== undefined ? task.parentTaskId : null
+  );
+
+  const [dependencyTasksIds, setDependencyTasksIds] = useState<string[]>(
+    task !== undefined ? task.dependencyTasks : []
+  );
+
+  const [blockedTasksIds, setBlockedTasksIds] = useState<string[]>(
+    defaultBlockedTasksIds
   );
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -74,6 +125,7 @@ const TaskForm: React.FC = () => {
             onChange={(e) => setName(e.target.value)}
             required={true}
             autoFocus
+            maxLength={100}
           />
         </Form.Group>
 
@@ -128,7 +180,7 @@ const TaskForm: React.FC = () => {
           )}
         </Form.Group>
 
-        <Row className="mt-3 mb-3">
+        <Row className="mt-3">
           <Col xs={12} sm={6}>
             {/* Priority */}
             <Form.Label>Priority</Form.Label>
@@ -189,14 +241,38 @@ const TaskForm: React.FC = () => {
           </Col>
         </Row>
 
-        {/* TODO: Parent Task (Button + Modal) */}
-        {/* TODO: Dependency Tasks */}
-        {/* TODO: Blocked Tasks */}
+        {/* Parent Task (Button + Modal) */}
+        <Form.Group>
+          <Form.Label>Parent Task</Form.Label>
+          <TaskPicker
+            taskId={parentTaskId}
+            disabledTasksIds={[task?.id ?? ""]}
+            onTaskIdChange={(tId) => setParentTaskId(tId)}
+          />
+        </Form.Group>
 
-        <Button variant="success" type="submit">
-          Save
-        </Button>
-        <Button onClick={goBack}>Cancel</Button>
+        <Row className="mt-3">
+          <Col xs={12} sm={6}>
+            <Form.Group>
+              <Form.Label>Dependency Tasks</Form.Label>
+              {/* TODO: Dependency Tasks (Block + Modal) */}
+            </Form.Group>
+          </Col>
+          <Col xs={12} sm={6}>
+            <Form.Group>
+              <Form.Label>Blocked Tasks</Form.Label>
+              {/* TODO: Blocked Tasks (Block + Modal) */}
+            </Form.Group>
+          </Col>
+        </Row>
+
+        <div className="mt-3">
+          <Button variant="success" type="submit">
+            Save
+          </Button>
+          &nbsp;
+          <Button onClick={goBack}>Cancel</Button>
+        </div>
       </Form>
     </Container>
   );

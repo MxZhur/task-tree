@@ -1,20 +1,49 @@
 import React, { useState } from "react";
 import { useAppSelector } from "../../store/hooks";
 import "./index.css";
-import { Badge, Button, ProgressBar } from "react-bootstrap";
+import { Badge, Button, Col, ProgressBar, Row } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCaretDown,
   faCaretRight,
   faCheck,
+  faEdit,
+  faHandPointLeft,
+  faShare,
 } from "@fortawesome/free-solid-svg-icons";
 import PriorityIndicator from "./PriorityIndicator";
 import DifficultyIndicator from "./DifficultyIndicator";
+import DependencyTasksList from "./DependencyTasksList";
 
 const TaskDetailsView: React.FC = () => {
   const task = useAppSelector((state) =>
     state.tasks.list.find((t) => t.id === state.selectedTask.taskId)
   );
+
+  const dependencyTasks = useAppSelector((state) => {
+    if (task === undefined) {
+      return [];
+    }
+    return state.tasks.list.filter((t) => task.dependencyTasks.includes(t.id));
+  });
+
+  const blockedTasks = useAppSelector((state) => {
+    if (task === undefined) {
+      return [];
+    }
+
+    return state.tasks.list.filter((t) => t.dependencyTasks.includes(task.id));
+  });
+
+  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+
+  const handleEditClick = () => {
+    // TODO: Implement
+  };
+
+  const handleMoveClick = () => {
+    // TODO: Implement
+  };
 
   if (task === undefined) {
     return (
@@ -25,26 +54,41 @@ const TaskDetailsView: React.FC = () => {
             justifyContent: "center",
             alignItems: "center",
             height: "100%",
+            color: "gray",
           }}
         >
-          Select a task
+          <FontAwesomeIcon icon={faHandPointLeft} />
+          &nbsp;Select a task
         </div>
       </div>
     );
   }
 
-  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
-
-  const dependencyTasks = useAppSelector((state) =>
-    state.tasks.list.filter((t) => task.dependencyTasks.includes(t.id))
-  );
-
-  const blockedTasks = useAppSelector((state) =>
-    state.tasks.list.filter((t) => t.dependencyTasks.includes(task.id))
-  );
-
   return (
     <div className="task-details-view-container">
+      {/* Header Bar */}
+      <div className="task-details-view-header-bar">
+        <div>
+          <strong>Task Details</strong>
+        </div>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "end",
+            alignItems: "center",
+          }}
+        >
+          <Button size="sm" variant="success" onClick={handleEditClick}>
+            <FontAwesomeIcon icon={faEdit} /> Edit
+          </Button>
+          &nbsp;
+          <Button size="sm" variant="primary" onClick={handleMoveClick}>
+            <FontAwesomeIcon icon={faShare} /> Move
+          </Button>
+        </div>
+      </div>
+
       {/* Name */}
       <div className="task-details-name">{task.name}</div>
 
@@ -110,8 +154,20 @@ const TaskDetailsView: React.FC = () => {
         </>
       )}
 
-      {/* TODO: Dependency Tasks */}
-      {/* TODO: Blocked Tasks */}
+      <Row>
+        <Col xs={6} style={{ wordWrap: "normal" }}>
+          {/* Dependency Tasks */}
+          <DependencyTasksList
+            tasks={dependencyTasks}
+            title={"Dependency Tasks"}
+            flipIcon={true}
+          />
+        </Col>
+        <Col xs={6} style={{ wordWrap: "normal" }}>
+          {/* Blocked Tasks */}
+          <DependencyTasksList tasks={blockedTasks} title={"Blocked Tasks"} />
+        </Col>
+      </Row>
     </div>
   );
 };

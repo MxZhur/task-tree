@@ -16,6 +16,19 @@
   word-wrap: break-word;
 }
 
+.task-details-view-header-bar {
+  font-size: 0.8rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.task-details-view-header-bar .btn {
+  padding: 1px 8px;
+  font-size: 0.8rem;
+}
+
 .task-details-name {
   font-size: 1.1rem;
   font-weight: bold;

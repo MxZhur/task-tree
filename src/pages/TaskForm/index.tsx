@@ -21,7 +21,7 @@ const TaskForm: React.FC = () => {
 
   const goBack = () => navigate(-1);
 
-  const { taskId } = useParams();
+  const { taskId, parentTask: paramParentTaskId } = useParams();
 
   const task = useAppSelector((state) => {
     if (!taskId) {
@@ -87,9 +87,17 @@ const TaskForm: React.FC = () => {
       : TASK_DIFFICULTIES.normal
   );
 
-  const [parentTaskId, setParentTaskId] = useState<string | null>(
-    task !== undefined ? task.parentTaskId : null
-  );
+  let defaultParentTaskId: string|null;
+
+  if (paramParentTaskId !== undefined) {
+    defaultParentTaskId = paramParentTaskId;
+  } else if (task !== undefined) {
+    defaultParentTaskId = task.parentTaskId;
+  } else {
+    defaultParentTaskId = null;
+  }
+
+  const [parentTaskId, setParentTaskId] = useState<string | null>(defaultParentTaskId);
 
   const [dependencyTasksIds, setDependencyTasksIds] = useState<string[]>(
     task !== undefined ? task.dependencyTasks : []

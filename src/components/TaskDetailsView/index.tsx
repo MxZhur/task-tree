@@ -4,12 +4,14 @@ import "./index.css";
 import { Badge, Button, Col, ProgressBar, Row } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faAdd,
   faCaretDown,
   faCaretRight,
   faCheck,
   faEdit,
   faHandPointLeft,
   faShare,
+  faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import PriorityIndicator from "./PriorityIndicator";
 import DifficultyIndicator from "./DifficultyIndicator";
@@ -38,6 +40,10 @@ const TaskDetailsView: React.FC = () => {
 
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
 
+  const onDeleteButtonClick = () => {
+    // TODO: Implement
+  };
+
   if (task === undefined) {
     return (
       <div className="task-details-view-container">
@@ -62,7 +68,7 @@ const TaskDetailsView: React.FC = () => {
       {/* Header Bar */}
       <div className="task-details-view-header-bar">
         <div>
-          <strong>Task Details</strong>
+          <strong>Details</strong>
         </div>
         <div
           style={{
@@ -72,6 +78,12 @@ const TaskDetailsView: React.FC = () => {
             alignItems: "center",
           }}
         >
+          <Link to={"/new/" + task.id}>
+            <Button size="sm" variant="primary">
+              <FontAwesomeIcon icon={faAdd} /> Subtask
+            </Button>
+          </Link>
+          &nbsp;
           <Link to={"/edit/" + task.id}>
             <Button size="sm" variant="success">
               <FontAwesomeIcon icon={faEdit} /> Edit
@@ -79,10 +91,14 @@ const TaskDetailsView: React.FC = () => {
           </Link>
           &nbsp;
           <Link to={"/move/" + task.id}>
-            <Button size="sm" variant="primary">
+            <Button size="sm" variant="warning">
               <FontAwesomeIcon icon={faShare} /> Move
             </Button>
           </Link>
+          &nbsp;
+          <Button size="sm" variant="danger" onClick={onDeleteButtonClick}>
+            <FontAwesomeIcon icon={faTrash} /> Delete
+          </Button>
         </div>
       </div>
 

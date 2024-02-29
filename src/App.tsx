@@ -12,6 +12,7 @@ function App() {
         <Route index element={<MainPage />}>
         </Route>
         <Route path="new" element={<TaskForm />} />
+        <Route path="new/:parentTask" element={<TaskForm />} />
         <Route path="edit/:taskId" element={<TaskForm />} />
       </Route>
     </Routes>

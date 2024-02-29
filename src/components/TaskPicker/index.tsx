@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import { useAppSelector } from "../../store/hooks";
 import { Button, Modal } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit } from "@fortawesome/free-solid-svg-icons";
+import { faClose, faEdit } from "@fortawesome/free-solid-svg-icons";
 import { TaskPickerItem } from "./TaskPickerItem";
 
 interface TaskPickerProps {
   taskId: string | null;
   disabledTasksIds?: string[];
-  onTaskIdChange: (taskId: string) => void;
+  onTaskIdChange: (taskId: string | null) => void;
 }
 
 const TaskPicker: React.FC<TaskPickerProps> = ({
@@ -44,6 +44,11 @@ const TaskPicker: React.FC<TaskPickerProps> = ({
     onTaskIdChange(tId);
   };
 
+  const onClear = () => {
+    handleCloseModal();
+    onTaskIdChange(null);
+  };
+
   return (
     <>
       <div
@@ -56,6 +61,15 @@ const TaskPicker: React.FC<TaskPickerProps> = ({
       >
         <Button size="sm" title="Change" onClick={handleShowModal}>
           <FontAwesomeIcon icon={faEdit} />
+        </Button>
+        &nbsp;
+        <Button
+          size="sm"
+          variant="danger"
+          title="Clear (set to none)"
+          onClick={onClear}
+        >
+          <FontAwesomeIcon icon={faClose} />
         </Button>
         &nbsp;
         <div style={{ overflow: "hidden", textOverflow: "ellipsis" }}>

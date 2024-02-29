@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useAppSelector } from "../../store/hooks";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import "./index.css";
 import { Badge, Button, Col, ProgressBar, Row } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -17,8 +17,12 @@ import PriorityIndicator from "./PriorityIndicator";
 import DifficultyIndicator from "./DifficultyIndicator";
 import DependencyTasksList from "./DependencyTasksList";
 import { Link } from "react-router-dom";
+import { ask } from "@tauri-apps/api/dialog";
+import { deleteTask } from "../../store/tasksSlice";
 
 const TaskDetailsView: React.FC = () => {
+  const dispatch = useAppDispatch();
+
   const task = useAppSelector((state) =>
     state.tasks.list.find((t) => t.id === state.selectedTask.taskId)
   );
@@ -40,8 +44,17 @@ const TaskDetailsView: React.FC = () => {
 
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
 
-  const onDeleteButtonClick = () => {
-    // TODO: Implement
+  const onDeleteButtonClick = async () => {
+    const deletionConfirmed = await ask('Delete task "' + task?.name + '"?', {
+      title: "Delete task",
+      type: "warning",
+    });
+
+    if (!deletionConfirmed) {
+      return;
+    }
+
+    dispatch(deleteTask(task?.id ?? ""));
   };
 
   if (task === undefined) {

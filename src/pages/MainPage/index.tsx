@@ -1,5 +1,5 @@
 import React from "react";
-import { TaskTree, TaskDetailsView } from "../../components";
+import { TaskTree, TaskDetailsView, TaskDependencyGraph } from "../../components";
 import { Col, Container, Row } from "react-bootstrap";
 
 const MainPage: React.FC = () => {
@@ -12,6 +12,7 @@ const MainPage: React.FC = () => {
           </Col>
           <Col xs={7}>
             <TaskDetailsView />
+            <TaskDependencyGraph />
           </Col>
         </Row>
       </Container>

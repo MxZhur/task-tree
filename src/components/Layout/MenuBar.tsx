@@ -20,11 +20,6 @@ const MenuBar: React.FC = () => {
     // TODO: Implement
   };
 
-  const onFileQuitClicked = async () => {
-    // TODO: Implement "dirty check"
-    await exit(0);
-  };
-
   return (
     <Nav className="bg-light">
       <Dropdown as={NavItem}>
@@ -36,8 +31,6 @@ const MenuBar: React.FC = () => {
           <Dropdown.Item className="unselectable" onClick={onFileSaveAsClicked}>
             Save As...
           </Dropdown.Item>
-          <Dropdown.Divider />
-          <Dropdown.Item className="unselectable" onClick={onFileQuitClicked}>Quit</Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
     </Nav>

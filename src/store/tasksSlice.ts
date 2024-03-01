@@ -33,6 +33,7 @@ export type TaskFormFields = {
   progress: number;
   difficulty: number;
   parentTaskId: string | null;
+  beforeTaskId: string | null;
   dependencyTasks: string[];
   blockedTasks: string[];
 };
@@ -235,7 +236,11 @@ const tasksSlice = createSlice({
             (t) => t.id === payload.blockedTasks[index]
           );
 
-          if (anotherTask === undefined || anotherTask.id === newTaskId || anotherTask.id === payload.parentTaskId) {
+          if (
+            anotherTask === undefined ||
+            anotherTask.id === newTaskId ||
+            anotherTask.id === payload.parentTaskId
+          ) {
             continue;
           }
 
@@ -270,37 +275,57 @@ const tasksSlice = createSlice({
       updatedTask.parentTaskId = payload.parentTaskId;
       updatedTask.dependencyTasks = payload.dependencyTasks;
 
-      if (oldParentTaskId !== payload.parentTaskId) {
-        // Update old parent's child IDs
+      // Update old parent's child IDs
 
-        if (oldParentTaskId !== null) {
-          let oldParentTask = state.list.find(
-            (el) => el.id === oldParentTaskId
-          );
+      if (oldParentTaskId !== null) {
+        let oldParentTask = state.list.find((el) => el.id === oldParentTaskId);
 
-          if (oldParentTask !== undefined) {
-            oldParentTask.childTasks = oldParentTask.childTasks.filter(
-              (el) => el !== updatedTask?.id
-            );
-          }
-        } else {
-          state.topLevelIDs = state.topLevelIDs.filter(
+        if (oldParentTask !== undefined) {
+          oldParentTask.childTasks = oldParentTask.childTasks.filter(
             (el) => el !== updatedTask?.id
           );
         }
+      } else {
+        state.topLevelIDs = state.topLevelIDs.filter(
+          (el) => el !== updatedTask?.id
+        );
+      }
 
-        // Update new parent's child IDs
+      // Update new parent's child IDs
 
-        if (payload.parentTaskId !== null) {
-          let newParentTask = state.list.find(
-            (el) => el.id === payload.parentTaskId
-          );
+      if (payload.parentTaskId !== null) {
+        let newParentTask = state.list.find(
+          (el) => el.id === payload.parentTaskId
+        );
 
-          if (newParentTask !== undefined && updatedTask?.id !== null) {
+        if (newParentTask !== undefined && updatedTask?.id !== null) {
+          if (payload.beforeTaskId === null) {
             newParentTask.childTasks.push(updatedTask.id);
+          } else {
+            const beforeTaskIndex = newParentTask.childTasks.findIndex(
+              (el) => el === payload.beforeTaskId
+            );
+
+            if (beforeTaskIndex !== -1) {
+              newParentTask.childTasks.splice(
+                beforeTaskIndex,
+                0,
+                updatedTask.id
+              );
+            }
           }
         } else {
-          state.topLevelIDs.push(updatedTask.id);
+          if (payload.beforeTaskId === null) {
+            state.topLevelIDs.push(updatedTask.id);
+          } else {
+            const beforeTaskIndex = state.topLevelIDs.findIndex(
+              (el) => el === payload.beforeTaskId
+            );
+
+            if (beforeTaskIndex !== -1) {
+              state.topLevelIDs.splice(beforeTaskIndex, 0, updatedTask.id);
+            }
+          }
         }
       }
 
@@ -373,81 +398,6 @@ const tasksSlice = createSlice({
 
       recalculateProgress(state);
     },
-    moveTask(state, action: PayloadAction<MoveTaskFormFields>) {
-      const { payload } = action;
-
-      let movedTask = state.list.find((el) => el.id === payload.id);
-
-      if (movedTask === undefined) {
-        return;
-      }
-
-      const oldParentTaskId = movedTask.parentTaskId;
-
-      movedTask.parentTaskId = payload.parentId;
-
-      if (oldParentTaskId !== payload.parentId) {
-        movedTask.dependencyTasks = [];
-
-        // Update old parent's child IDs
-
-        if (oldParentTaskId !== null) {
-          let oldParentTask = state.list.find(
-            (el) => el.id === oldParentTaskId
-          );
-
-          if (oldParentTask !== undefined) {
-            oldParentTask.childTasks = oldParentTask.childTasks.filter(
-              (el) => el !== movedTask?.id
-            );
-          }
-        } else {
-          state.topLevelIDs = state.topLevelIDs.filter(
-            (el) => el !== movedTask?.id
-          );
-        }
-
-        // Update new parent's child IDs (at the specific place in the array)
-
-        if (movedTask.parentTaskId !== null) {
-          let newParentTask = state.list.find(
-            (el) => el.id === movedTask?.parentTaskId
-          );
-
-          if (newParentTask !== undefined && movedTask?.id !== null) {
-            if (payload.beforeTaskId === null) {
-              newParentTask.childTasks.push(movedTask.id);
-            } else {
-              const beforeTaskIndex = newParentTask.childTasks.findIndex(
-                (el) => el === payload.beforeTaskId
-              );
-
-              if (beforeTaskIndex !== -1) {
-                newParentTask.childTasks.splice(
-                  beforeTaskIndex,
-                  0,
-                  movedTask.id
-                );
-              }
-            }
-          } else {
-            if (payload.beforeTaskId === null) {
-              state.topLevelIDs.push(movedTask.id);
-            } else {
-              const beforeTaskIndex = state.topLevelIDs.findIndex(
-                (el) => el === payload.beforeTaskId
-              );
-
-              if (beforeTaskIndex !== -1) {
-                state.topLevelIDs.splice(beforeTaskIndex, 0, movedTask.id);
-              }
-            }
-          }
-        }
-      }
-
-      recalculateProgress(state);
-    },
     deleteTask(state, action: PayloadAction<string>) {
       const { payload } = action;
 
@@ -494,7 +444,7 @@ const tasksSlice = createSlice({
   },
 });
 
-export const { addTask, updateTask, updateProgress, moveTask, deleteTask } =
+export const { addTask, updateTask, updateProgress, deleteTask } =
   tasksSlice.actions;
 
 // TODO: Selectors:

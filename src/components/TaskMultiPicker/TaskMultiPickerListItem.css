@@ -1,0 +1,11 @@
+.task-multi-picker-list-item-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.task-multi-picker-list-item-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

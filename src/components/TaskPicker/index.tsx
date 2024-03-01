@@ -9,27 +9,39 @@ interface TaskPickerProps {
   taskId: string | null;
   disabledTasksIds?: string[];
   onTaskIdChange: (taskId: string | null) => void;
+  recursive?: boolean;
+  placeholder?: string;
+  availableTasksIds?: string[];
 }
 
 const TaskPicker: React.FC<TaskPickerProps> = ({
   taskId = null,
   disabledTasksIds = [],
   onTaskIdChange,
+  recursive = true,
+  placeholder = "None",
+  availableTasksIds = [],
 }) => {
   const pickedTask = useAppSelector((state) =>
     state.tasks.list.find((t) => t.id === taskId)
   );
 
   const topLevelTasks = useAppSelector((state) => {
-    return state.tasks.topLevelIDs
-      .map((tID) => state.tasks.list.find((t) => t.id === tID) ?? null)
-      .filter((e) => e !== null);
+    if (availableTasksIds !== undefined && availableTasksIds.length > 0) {
+      return availableTasksIds
+        .map((tID) => state.tasks.list.find((t) => t.id === tID) ?? null)
+        .filter((e) => e !== null);
+    } else {
+      return state.tasks.topLevelIDs
+        .map((tID) => state.tasks.list.find((t) => t.id === tID) ?? null)
+        .filter((e) => e !== null);
+    }
   });
 
   let taskNameJsx;
 
   if (taskId === null || pickedTask === undefined) {
-    taskNameJsx = <span className="text-muted">None</span>;
+    taskNameJsx = <span className="text-muted">{placeholder}</span>;
   } else {
     taskNameJsx = <span>{pickedTask.name}</span>;
   }
@@ -88,6 +100,7 @@ const TaskPicker: React.FC<TaskPickerProps> = ({
                 task={t!}
                 onPick={onPick}
                 disabledTasksIds={disabledTasksIds}
+                recursive={recursive}
               />
             ))}
           </div>

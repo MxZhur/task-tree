@@ -7,12 +7,14 @@ interface TaskPickerItemProps {
   task: Task;
   disabledTasksIds?: string[];
   onPick: (taskId: string) => void;
+  recursive?: boolean;
 }
 
 const TaskPickerItem: React.FC<TaskPickerItemProps> = ({
   task,
   disabledTasksIds,
   onPick,
+  recursive = true,
 }) => {
   const childTasks = useAppSelector((state) => {
     return task.childTasks
@@ -33,20 +35,33 @@ const TaskPickerItem: React.FC<TaskPickerItemProps> = ({
         className="unselectable"
         style={{ overflow: "hidden", textOverflow: "ellipsis" }}
       >
-        {disabledTasksIds !== undefined && disabledTasksIds.includes(task.id) ? (
+        {disabledTasksIds !== undefined &&
+        disabledTasksIds.includes(task.id) ? (
           <span>{task.name}</span>
         ) : (
-          <span className="btn btn-link" style={{padding: '0'}} onClick={handleClick}>
+          <span
+            className="btn btn-link"
+            style={{ padding: "0" }}
+            onClick={handleClick}
+          >
             {task.name}
           </span>
         )}
       </div>
-      <div className="task-picker-item-child-container">
-        {childTasks.length > 0 &&
-          childTasks.map((t) => (
-            <TaskPickerItem key={t!.id} task={t!} onPick={onPick} disabledTasksIds={disabledTasksIds} />
+
+      {recursive && childTasks.length > 0 && (
+        <div className="task-picker-item-child-container">
+          {childTasks.map((t) => (
+            <TaskPickerItem
+              key={t!.id}
+              task={t!}
+              onPick={onPick}
+              disabledTasksIds={disabledTasksIds}
+              recursive={recursive}
+            />
           ))}
-      </div>
+        </div>
+      )}
     </>
   );
 };

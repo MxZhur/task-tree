@@ -8,15 +8,23 @@ import {
   Row,
 } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
-import { useAppSelector } from "../../store/hooks";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck } from "@fortawesome/free-solid-svg-icons";
-import { TASK_DIFFICULTIES, TASK_PRIORITIES } from "../../store/tasksSlice";
+import { faCheck, faDiagramProject } from "@fortawesome/free-solid-svg-icons";
+import {
+  TASK_DIFFICULTIES,
+  TASK_PRIORITIES,
+  Task,
+  addTask,
+  updateTask,
+} from "../../store/tasksSlice";
 import PriorityIndicator from "../../components/TaskDetailsView/PriorityIndicator";
 import DifficultyIndicator from "../../components/TaskDetailsView/DifficultyIndicator";
 import { TaskPicker } from "../../components";
+import { TaskMultiPicker } from "../../components/TaskMultiPicker";
 
 const TaskForm: React.FC = () => {
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const goBack = () => navigate(-1);
@@ -31,15 +39,22 @@ const TaskForm: React.FC = () => {
     return state.tasks.list.find((t) => t.id === taskId);
   });
 
-  const neighborTasksIds = useAppSelector((state) => {
-    if (task === undefined) {
-      return [];
+  const topLevelTasksIDs = useAppSelector((state) => state.tasks.topLevelIDs);
+  const allTasks: Task[] = useAppSelector((state) => state.tasks.list);
+
+  const defaultNeighborTasksIds = useAppSelector((state) => {
+    let parentId: string | null;
+
+    if (paramParentTaskId !== undefined) {
+      parentId = paramParentTaskId;
+    } else if (task !== undefined) {
+      parentId = task.parentTaskId;
+    } else {
+      parentId = null;
     }
 
-    if (task.parentTaskId !== null) {
-      const parentTask = state.tasks.list.find(
-        (t) => t.id === task.parentTaskId
-      );
+    if (parentId !== null) {
+      const parentTask = state.tasks.list.find((t) => t.id === parentId);
 
       if (parentTask === undefined) {
         return state.tasks.topLevelIDs;
@@ -56,18 +71,6 @@ const TaskForm: React.FC = () => {
       .filter((t) => t.dependencyTasks.includes(task?.id ?? ""))
       .map((t) => t.id);
   });
-
-  // const findTask = (taskId: string) => {
-  //   return allTasks.find((t) => t.id === taskId);
-  // };
-
-  // const findTasks = (taskIds: string[]) => {
-  //   return allTasks.filter((t) => taskIds.includes(t.id));
-  // };
-
-  // const topLevelTasksIDs = useAppSelector((state) => {
-  //   return state.tasks.topLevelIDs;
-  // });
 
   const [name, setName] = useState<string>(task ? task.name : "");
   const [description, setDescription] = useState<string>(
@@ -87,7 +90,7 @@ const TaskForm: React.FC = () => {
       : TASK_DIFFICULTIES.normal
   );
 
-  let defaultParentTaskId: string|null;
+  let defaultParentTaskId: string | null;
 
   if (paramParentTaskId !== undefined) {
     defaultParentTaskId = paramParentTaskId;
@@ -97,7 +100,34 @@ const TaskForm: React.FC = () => {
     defaultParentTaskId = null;
   }
 
-  const [parentTaskId, setParentTaskId] = useState<string | null>(defaultParentTaskId);
+  const [parentTaskId, setParentTaskId] = useState<string | null>(
+    defaultParentTaskId
+  );
+
+  let defaultBeforeTaskId: string | null;
+
+  if (taskId === undefined) {
+    defaultBeforeTaskId = null;
+  } else {
+    let defaultBeforeTaskIndex: number =
+      defaultNeighborTasksIds.findIndex((tId) => tId === taskId) + 1;
+
+    if (defaultBeforeTaskIndex < 0 || defaultBeforeTaskIndex >= defaultNeighborTasksIds.length) {
+      defaultBeforeTaskId = null;
+    } else {
+      defaultBeforeTaskId = defaultNeighborTasksIds[defaultBeforeTaskIndex];
+    }
+  }
+
+  const [beforeTaskId, setBeforeTaskId] = useState<string | null>(
+    defaultBeforeTaskId
+  );
+
+  console.log(beforeTaskId);
+
+  const [neighborTasksIds, setNeighborTasksIds] = useState(
+    defaultNeighborTasksIds
+  );
 
   const [dependencyTasksIds, setDependencyTasksIds] = useState<string[]>(
     task !== undefined ? task.dependencyTasks : []
@@ -107,14 +137,61 @@ const TaskForm: React.FC = () => {
     defaultBlockedTasksIds
   );
 
+  const changeParentTask = (tId: string | null) => {
+    setParentTaskId(tId);
+
+    if (tId !== null) {
+      const parentTask = allTasks.find((t) => t.id === tId);
+
+      if (parentTask === undefined) {
+        setNeighborTasksIds(topLevelTasksIDs);
+      } else {
+        setNeighborTasksIds(parentTask.childTasks);
+      }
+    } else {
+      setNeighborTasksIds(topLevelTasksIDs);
+    }
+
+    setBeforeTaskId(null);
+    setDependencyTasksIds([]);
+    setBlockedTasksIds([]);
+  };
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // TODO: Validate the form
+    if (taskId === undefined) {
+      dispatch(
+        addTask({
+          name,
+          description,
+          progress,
+          priority,
+          difficulty,
+          parentTaskId,
+          beforeTaskId,
+          dependencyTasks: dependencyTasksIds,
+          blockedTasks: blockedTasksIds,
+        })
+      );
+    } else {
+      dispatch(
+        updateTask({
+          id: taskId,
+          name,
+          description,
+          progress,
+          priority,
+          difficulty,
+          parentTaskId,
+          beforeTaskId,
+          dependencyTasks: dependencyTasksIds,
+          blockedTasks: blockedTasksIds,
+        })
+      );
+    }
 
-    // TODO: Prepare the fields
-
-    // TODO: Dispatch the action
+    navigate(-1);
   };
 
   return (
@@ -249,32 +326,96 @@ const TaskForm: React.FC = () => {
           </Col>
         </Row>
 
-        {/* Parent Task (Button + Modal) */}
-        <Form.Group>
-          <Form.Label>Parent Task</Form.Label>
-          <TaskPicker
-            taskId={parentTaskId}
-            disabledTasksIds={[task?.id ?? ""]}
-            onTaskIdChange={(tId) => setParentTaskId(tId)}
-          />
-        </Form.Group>
-
         <Row className="mt-3">
           <Col xs={12} sm={6}>
+            {/* Parent Task (Button + Modal) */}
             <Form.Group>
-              <Form.Label>Dependency Tasks</Form.Label>
-              {/* TODO: Dependency Tasks (Block + Modal) */}
+              <Form.Label>Parent Task</Form.Label>
+              <TaskPicker
+                taskId={parentTaskId}
+                disabledTasksIds={[task?.id ?? ""]}
+                onTaskIdChange={(tId) => changeParentTask(tId)}
+              />
             </Form.Group>
           </Col>
           <Col xs={12} sm={6}>
+            {/* Before Task (Button + Modal) */}
             <Form.Group>
-              <Form.Label>Blocked Tasks</Form.Label>
-              {/* TODO: Blocked Tasks (Block + Modal) */}
+              <Form.Label>Place Before</Form.Label>
+              <TaskPicker
+                taskId={beforeTaskId}
+                disabledTasksIds={[task?.id ?? ""]}
+                onTaskIdChange={(tId) => setBeforeTaskId(tId)}
+                availableTasksIds={neighborTasksIds}
+                placeholder={"End of list"}
+                recursive={false}
+              />
             </Form.Group>
           </Col>
         </Row>
 
-        <div className="mt-3">
+        <Row className="mt-3">
+          <Col xs={12} sm={6}>
+            {/* Dependency Tasks (Block + Modal) */}
+            <Form.Group>
+              <Form.Label>
+                <FontAwesomeIcon icon={faDiagramProject} rotation={180} />{" "}
+                Dependency Tasks
+              </Form.Label>
+              <TaskMultiPicker
+                availableTasksIds={neighborTasksIds}
+                disabledTasksIds={[
+                  taskId ?? "",
+                  ...blockedTasksIds,
+                  ...dependencyTasksIds,
+                ]}
+                selectedTasksIds={dependencyTasksIds}
+                onAdd={(tId) =>
+                  setDependencyTasksIds(
+                    dependencyTasksIds.includes(tId)
+                      ? dependencyTasksIds
+                      : [...dependencyTasksIds, tId]
+                  )
+                }
+                onRemove={(tId) =>
+                  setDependencyTasksIds(
+                    dependencyTasksIds.filter((id) => id !== tId)
+                  )
+                }
+              />
+            </Form.Group>
+          </Col>
+          <Col xs={12} sm={6}>
+            {/* Blocked Tasks (Block + Modal) */}
+            <Form.Group>
+              <Form.Label>
+                <FontAwesomeIcon icon={faDiagramProject} /> Blocked Tasks
+              </Form.Label>
+
+              <TaskMultiPicker
+                availableTasksIds={neighborTasksIds}
+                disabledTasksIds={[
+                  taskId ?? "",
+                  ...dependencyTasksIds,
+                  ...blockedTasksIds,
+                ]}
+                selectedTasksIds={blockedTasksIds}
+                onAdd={(tId) =>
+                  setBlockedTasksIds(
+                    blockedTasksIds.includes(tId)
+                      ? blockedTasksIds
+                      : [...blockedTasksIds, tId]
+                  )
+                }
+                onRemove={(tId) =>
+                  setBlockedTasksIds(blockedTasksIds.filter((id) => id !== tId))
+                }
+              />
+            </Form.Group>
+          </Col>
+        </Row>
+
+        <div className="mt-3 mb-3 pb-4">
           <Button variant="success" type="submit">
             Save
           </Button>

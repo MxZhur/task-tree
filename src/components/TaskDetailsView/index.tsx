@@ -103,12 +103,6 @@ const TaskDetailsView: React.FC = () => {
             </Button>
           </Link>
           &nbsp;
-          <Link to={"/move/" + task.id}>
-            <Button size="sm" variant="warning">
-              <FontAwesomeIcon icon={faShare} /> Move
-            </Button>
-          </Link>
-          &nbsp;
           <Button size="sm" variant="danger" onClick={onDeleteButtonClick}>
             <FontAwesomeIcon icon={faTrash} /> Delete
           </Button>

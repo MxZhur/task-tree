@@ -13,17 +13,17 @@ export type Task = {
 };
 
 export const TASK_PRIORITIES = {
-  'critical': 1,
-  'high': 2,
-  'medium': 3,
-  'low': 4,
-  'none': 5,
+  critical: 1,
+  high: 2,
+  medium: 3,
+  low: 4,
+  none: 5,
 };
 
 export const TASK_DIFFICULTIES = {
-  'hard': 2,
-  'normal': 1,
-  'easy': 0.5,
+  hard: 2,
+  normal: 1,
+  easy: 0.5,
 };
 
 export type TaskFormFields = {
@@ -65,7 +65,7 @@ const initialState: TasksState = {
       progress: 50,
       difficulty: TASK_DIFFICULTIES.easy,
       parentTaskId: null,
-      childTasks: ['wsx', 'qaz', 'rfv'],
+      childTasks: ["wsx", "qaz", "rfv"],
       dependencyTasks: [],
     },
     {
@@ -76,19 +76,20 @@ const initialState: TasksState = {
       progress: 100,
       difficulty: TASK_DIFFICULTIES.normal,
       parentTaskId: null,
-      childTasks: ['edc'],
-      dependencyTasks: ['qwe'],
+      childTasks: ["edc"],
+      dependencyTasks: ["qwe"],
     },
     {
       id: "qaz",
       name: "Qazaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-      description: "Qazaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      description:
+        "Qazaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
       priority: 3,
       progress: 50,
       difficulty: TASK_DIFFICULTIES.easy,
-      parentTaskId: 'qwe',
+      parentTaskId: "qwe",
       childTasks: [],
-      dependencyTasks: ['wsx'],
+      dependencyTasks: ["wsx"],
     },
     {
       id: "wsx",
@@ -97,7 +98,7 @@ const initialState: TasksState = {
       priority: 4,
       progress: 50,
       difficulty: TASK_DIFFICULTIES.easy,
-      parentTaskId: 'qwe',
+      parentTaskId: "qwe",
       childTasks: [],
       dependencyTasks: [],
     },
@@ -108,9 +109,9 @@ const initialState: TasksState = {
       priority: 5,
       progress: 10,
       difficulty: 1,
-      parentTaskId: 'qwe',
+      parentTaskId: "qwe",
       childTasks: [],
-      dependencyTasks: ['wsx', 'qaz'],
+      dependencyTasks: ["wsx", "qaz"],
     },
     {
       id: "edc",
@@ -119,7 +120,7 @@ const initialState: TasksState = {
       priority: 1,
       progress: 100,
       difficulty: TASK_DIFFICULTIES.hard,
-      parentTaskId: 'asd',
+      parentTaskId: "asd",
       childTasks: [],
       dependencyTasks: [],
     },
@@ -230,9 +231,11 @@ const tasksSlice = createSlice({
         // Update dependencyTasks for all blocked tasks (remove old, then add new)
 
         for (let index = 0; index < payload.blockedTasks.length; index++) {
-          let anotherTask = state.list[index];
+          let anotherTask = state.list.find(
+            (t) => t.id === payload.blockedTasks[index]
+          );
 
-          if (anotherTask.id === newTaskId) {
+          if (anotherTask === undefined || anotherTask.id === newTaskId || anotherTask.id === payload.parentTaskId) {
             continue;
           }
 
@@ -264,7 +267,7 @@ const tasksSlice = createSlice({
       updatedTask.priority = payload.priority;
       updatedTask.progress = payload.progress;
       updatedTask.difficulty = payload.difficulty;
-      updatedTask.parentTaskId !== payload.parentTaskId;
+      updatedTask.parentTaskId = payload.parentTaskId;
       updatedTask.dependencyTasks = payload.dependencyTasks;
 
       if (oldParentTaskId !== payload.parentTaskId) {
@@ -288,9 +291,9 @@ const tasksSlice = createSlice({
 
         // Update new parent's child IDs
 
-        if (updatedTask.parentTaskId !== null) {
+        if (payload.parentTaskId !== null) {
           let newParentTask = state.list.find(
-            (el) => el.id === updatedTask?.parentTaskId
+            (el) => el.id === payload.parentTaskId
           );
 
           if (newParentTask !== undefined && updatedTask?.id !== null) {
@@ -311,15 +314,23 @@ const tasksSlice = createSlice({
       );
 
       if (
-        deletedBlockedTasksIDs.length > 0 &&
+        deletedBlockedTasksIDs.length > 0 ||
         addedBlockedTasksIDs.length > 0
       ) {
         for (let index = 0; index < deletedBlockedTasksIDs.length; index++) {
-          let anotherTask = state.list[index];
+          let anotherTask = state.list.find(
+            (t) => t.id === deletedBlockedTasksIDs[index]
+          );
 
-          if (anotherTask.id === payload.id) {
+          if (
+            anotherTask === undefined ||
+            anotherTask.id === updatedTask?.id ||
+            anotherTask.id === updatedTask?.parentTaskId
+          ) {
             continue;
           }
+
+          console.log(anotherTask);
 
           anotherTask.dependencyTasks = anotherTask.dependencyTasks.filter(
             (el) => el !== updatedTask?.id
@@ -327,9 +338,15 @@ const tasksSlice = createSlice({
         }
 
         for (let index = 0; index < addedBlockedTasksIDs.length; index++) {
-          let anotherTask = state.list[index];
+          let anotherTask = state.list.find(
+            (t) => t.id === addedBlockedTasksIDs[index]
+          );
 
-          if (anotherTask.id === payload.id) {
+          if (
+            anotherTask === undefined ||
+            anotherTask.id === updatedTask?.id ||
+            anotherTask.id === updatedTask?.parentTaskId
+          ) {
             continue;
           }
 

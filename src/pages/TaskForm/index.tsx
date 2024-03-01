@@ -22,6 +22,7 @@ import PriorityIndicator from "../../components/TaskDetailsView/PriorityIndicato
 import DifficultyIndicator from "../../components/TaskDetailsView/DifficultyIndicator";
 import { TaskPicker } from "../../components";
 import { TaskMultiPicker } from "../../components/TaskMultiPicker";
+import { setIsDirty } from "../../store/currentFileSlice";
 
 const TaskForm: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -174,6 +175,7 @@ const TaskForm: React.FC = () => {
           blockedTasks: blockedTasksIds,
         })
       );
+      dispatch(setIsDirty(true));
     } else {
       dispatch(
         updateTask({
@@ -189,6 +191,7 @@ const TaskForm: React.FC = () => {
           blockedTasks: blockedTasksIds,
         })
       );
+      dispatch(setIsDirty(true));
     }
 
     navigate(-1);

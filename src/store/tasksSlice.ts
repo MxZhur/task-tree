@@ -441,10 +441,19 @@ const tasksSlice = createSlice({
 
       recalculateProgress(state);
     },
+    clearTasks(state) {
+      state.list = [];
+      state.topLevelIDs = [];
+    },
+    loadTasks(state, action: PayloadAction<string>) {
+      const loadedState = JSON.parse(action.payload);
+      state.list = loadedState.list;
+      state.topLevelIDs = loadedState.topLevelIDs;
+    },
   },
 });
 
-export const { addTask, updateTask, updateProgress, deleteTask } =
+export const { addTask, updateTask, updateProgress, deleteTask, clearTasks, loadTasks } =
   tasksSlice.actions;
 
 // TODO: Selectors:

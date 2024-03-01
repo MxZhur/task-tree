@@ -1,11 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import tasksReducer from './tasksSlice';
 import selectedTaskReducer from './selectedTaskSlice';
+import currentFileReducer from "./currentFileSlice";
 
 const store = configureStore({
     reducer: {
         tasks: tasksReducer,
         selectedTask: selectedTaskReducer,
+        currentFile: currentFileReducer,
     }
 });
 

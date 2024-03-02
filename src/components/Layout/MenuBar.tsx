@@ -1,5 +1,5 @@
 import React from "react";
-import { Nav, NavItem, NavLink, Dropdown, Button } from "react-bootstrap";
+import { Nav, Button } from "react-bootstrap";
 import "./MenuBar.css";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { openFile, saveFileAs, saveFileTo } from "../../utils/file";
@@ -12,7 +12,12 @@ import {
 import { changeWindowTitle } from "../../utils/window";
 import { ask } from "@tauri-apps/api/dialog";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFile, faFloppyDisk, faFolderOpen, faSdCard } from "@fortawesome/free-solid-svg-icons";
+import {
+  faFile,
+  faFloppyDisk,
+  faFolderOpen,
+  faSdCard,
+} from "@fortawesome/free-solid-svg-icons";
 
 const MenuBar: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -96,13 +101,16 @@ const MenuBar: React.FC = () => {
         </Button>
       </Nav.Item>
       <Nav.Item>
-        <Button title="Save File" variant='link' onClick={onFileSaveClicked}>
-        <FontAwesomeIcon icon={faFloppyDisk} color={currentFileInfo.isDirty ? 'red' : undefined} />
+        <Button title="Save File" variant="link" onClick={onFileSaveClicked}>
+          <FontAwesomeIcon
+            icon={faFloppyDisk}
+            color={currentFileInfo.isDirty ? "red" : undefined}
+          />
         </Button>
       </Nav.Item>
       <Nav.Item>
         <Button title="Save As..." variant="link" onClick={onFileSaveAsClicked}>
-        <FontAwesomeIcon icon={faSdCard} />
+          <FontAwesomeIcon icon={faSdCard} />
         </Button>
       </Nav.Item>
     </Nav>

@@ -8,6 +8,7 @@ import {
   faTriangleExclamation,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useTranslation } from "react-i18next";
 
 interface PriorityIndicatorProps {
   priority: number;
@@ -18,6 +19,8 @@ const PriorityIndicator: React.FC<PriorityIndicatorProps> = ({
   priority,
   showLabel = false,
 }) => {
+  const { t } = useTranslation();
+
   let icon: IconProp;
   let label: string;
   let color: string;
@@ -26,39 +29,39 @@ const PriorityIndicator: React.FC<PriorityIndicatorProps> = ({
   switch (priority) {
     case TASK_PRIORITIES.critical:
       icon = faTriangleExclamation;
-      label = "Critical";
+      label = t('priority.critical');
       color = "red";
-      tooltip = "Critical Priority";
+      tooltip = t('priority.critical') + " " + t('priority.priority');
       break;
     case TASK_PRIORITIES.high:
       icon = faCircleExclamation;
-      label = "High";
+      label = t('priority.high');
       color = "darkorange";
-      tooltip = "High Priority";
+      tooltip = t('priority.high') + " " + t('priority.priority');
       break;
     case TASK_PRIORITIES.medium:
       icon = faFlag;
-      label = "Meduim";
+      label = t('priority.medium');
       color = "green";
-      tooltip = "Medium Priority";
+      tooltip = t('priority.medium') + " " + t('priority.priority');
       break;
     case TASK_PRIORITIES.low:
       icon = faFlag;
-      label = "Low";
+      label = t('priority.low');
       color = "skyblue";
-      tooltip = "Low Priority";
+      tooltip = t('priority.low') + " " + t('priority.priority');
       break;
     case TASK_PRIORITIES.none:
       icon = faCircle;
-      label = "None";
+      label = t('priority.none');
       color = "lightgray";
-      tooltip = "No Priority";
+      tooltip = t('priority.no') + " " + t('priority.priority');
       break;
     default:
       icon = faCircle;
-      label = "None";
+      label = t('priority.none');
       color = "lightgray";
-      tooltip = "No Priority";
+      tooltip = t('priority.no') + " " + t('priority.priority');
       break;
   }
 

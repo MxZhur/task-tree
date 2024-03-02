@@ -11,6 +11,8 @@ function App() {
   const navigate = useNavigate();
 
   // TODO: Fix the close request handler
+
+  // const { t } = useTranslation();
   // const unlistenCloseRequest = appWindow.onCloseRequested(async (event) => {
   //   const fileIsDirty = store.getState().currentFile.isDirty;
 
@@ -20,15 +22,13 @@ function App() {
   //     return;
   //   }
 
-  //   const confirmed = await ask("Are you sure?");
+  //   const confirmed = await ask(t("exitConfirmation.youSure"));
   //   if (!confirmed) {
   //     event.preventDefault();
   //     return;
   //   }
 
-  //   const fileSaveConfirmed = await ask(
-  //     "Your project has unsaved changes. Do you want to save them?"
-  //   );
+  //   const fileSaveConfirmed = await ask(t("exitConfirmation.saveChanges"));
 
   //   if (fileSaveConfirmed) {
   //     // Also check if that's not a new file

@@ -6,6 +6,7 @@ import { useAppSelector } from "../../store/hooks";
 import { TaskMultiPickerListItem } from "./TaskMultiPickerListItem";
 import "./index.css";
 import { TaskPickerItem } from "../TaskPicker/TaskPickerItem";
+import { useTranslation } from "react-i18next";
 
 interface TaskMultiPickerProps {
   selectedTasksIds: string[];
@@ -22,6 +23,8 @@ const TaskMultiPicker: React.FC<TaskMultiPickerProps> = ({
   onAdd,
   onRemove,
 }) => {
+  const { t } = useTranslation();
+
   const selectedTasks = useAppSelector((state) =>
     state.tasks.list.filter((t) => selectedTasksIds.includes(t.id))
   );
@@ -45,7 +48,7 @@ const TaskMultiPicker: React.FC<TaskMultiPickerProps> = ({
       <div className="task-multi-picker-container">
         <div className="d-grid gap-2">
           <Button size="sm" onClick={handleShowModal}>
-            <FontAwesomeIcon icon={faAdd} /> Add
+            <FontAwesomeIcon icon={faAdd} /> {t('add')}
           </Button>
         </div>
         <div className="task-multi-picker-list-container">
@@ -60,7 +63,7 @@ const TaskMultiPicker: React.FC<TaskMultiPickerProps> = ({
       </div>
       <Modal show={showModal} centered onHide={handleCloseModal}>
         <Modal.Header closeButton>
-          <Modal.Title>Select Task</Modal.Title>
+          <Modal.Title>{t('selectTask')}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div>

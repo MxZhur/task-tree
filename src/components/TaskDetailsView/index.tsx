@@ -21,8 +21,10 @@ import { ask } from "@tauri-apps/api/dialog";
 import { deleteTask } from "../../store/tasksSlice";
 import { setIsDirty } from "../../store/currentFileSlice";
 import { setSelectedTask } from "../../store/selectedTaskSlice";
+import { useTranslation } from "react-i18next";
 
 const TaskDetailsView: React.FC = () => {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
   const task = useAppSelector((state) =>
@@ -47,10 +49,13 @@ const TaskDetailsView: React.FC = () => {
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
 
   const onDeleteButtonClick = async () => {
-    const deletionConfirmed = await ask('Delete task "' + task?.name + '"?', {
-      title: "Delete task",
-      type: "warning",
-    });
+    const deletionConfirmed = await ask(
+      t("delete") + ' "' + task?.name + '"?',
+      {
+        title: t("deleteTask"),
+        type: "warning",
+      }
+    );
 
     if (!deletionConfirmed) {
       return;
@@ -74,7 +79,7 @@ const TaskDetailsView: React.FC = () => {
           }}
         >
           <FontAwesomeIcon icon={faHandPointLeft} />
-          &nbsp;Select a task
+          &nbsp;{t("taskDetails.pleaseSelectTask")}
         </div>
       </div>
     );
@@ -85,7 +90,7 @@ const TaskDetailsView: React.FC = () => {
       {/* Header Bar */}
       <div className="task-details-view-header-bar">
         <div>
-          <strong>Details</strong>
+          <strong>{t("taskDetails.details")}</strong>
         </div>
         <div
           style={{
@@ -97,18 +102,18 @@ const TaskDetailsView: React.FC = () => {
         >
           <Link to={"/home/new/" + task.id}>
             <Button size="sm" variant="primary">
-              <FontAwesomeIcon icon={faAdd} /> Subtask
+              <FontAwesomeIcon icon={faAdd} /> {t("taskDetails.addSubtask")}
             </Button>
           </Link>
           &nbsp;
           <Link to={"/home/edit/" + task.id}>
             <Button size="sm" variant="success">
-              <FontAwesomeIcon icon={faEdit} /> Edit
+              <FontAwesomeIcon icon={faEdit} /> {t("taskDetails.edit")}
             </Button>
           </Link>
           &nbsp;
           <Button size="sm" variant="danger" onClick={onDeleteButtonClick}>
-            <FontAwesomeIcon icon={faTrash} /> Delete
+            <FontAwesomeIcon icon={faTrash} /> {t("taskDetails.delete")}
           </Button>
         </div>
       </div>
@@ -128,7 +133,7 @@ const TaskDetailsView: React.FC = () => {
         <Badge bg="success">
           <FontAwesomeIcon icon={faCheck} />
           <span className="unselectable" style={{ fontWeight: "normal" }}>
-            &nbsp; Completed
+            &nbsp; {t("completed")}
           </span>
         </Badge>
       )}
@@ -171,7 +176,7 @@ const TaskDetailsView: React.FC = () => {
                   icon={isDescriptionExpanded ? faCaretDown : faCaretRight}
                 />
               </div>
-              Description
+              {t("taskDetails.description")}
             </div>
           </Button>
           {isDescriptionExpanded && <div>{task?.description}</div>}
@@ -183,13 +188,16 @@ const TaskDetailsView: React.FC = () => {
           {/* Dependency Tasks */}
           <DependencyTasksList
             tasks={dependencyTasks}
-            title={"Dependency Tasks"}
+            title={t("taskDetails.dependencyTasks")}
             flipIcon={true}
           />
         </Col>
         <Col xs={6} style={{ wordWrap: "normal" }}>
           {/* Blocked Tasks */}
-          <DependencyTasksList tasks={blockedTasks} title={"Blocked Tasks"} />
+          <DependencyTasksList
+            tasks={blockedTasks}
+            title={t("taskDetails.blockedTasks")}
+          />
         </Col>
       </Row>
     </div>

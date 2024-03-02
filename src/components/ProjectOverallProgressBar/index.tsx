@@ -2,8 +2,11 @@ import React from "react";
 import { ProgressBar } from "react-bootstrap";
 import { useAppSelector } from "../../store/hooks";
 import { calcAvgProgress } from "../../store/tasksSlice";
+import { useTranslation } from "react-i18next";
 
 const ProjectOverallProgressBar: React.FC = () => {
+  const { t } = useTranslation();
+
   const overallProgress = useAppSelector((state) => {
     const allTopLevelTasks = state.tasks.list.filter((t) =>
       state.tasks.topLevelIDs.includes(t.id)
@@ -23,7 +26,7 @@ const ProjectOverallProgressBar: React.FC = () => {
         whiteSpace: "nowrap",
       }}
     >
-      <div>Project Progress&nbsp;</div>
+      <div>{t('projectProgress')}&nbsp;</div>
       <ProgressBar
         style={{ height: "20px", width: "100%" }}
         variant={overallProgress >= 100 ? "success" : "primary"}

@@ -19,10 +19,14 @@ import {
 import { changeWindowTitle } from "../../utils/window";
 import { Link, useNavigate } from "react-router-dom";
 import { clearRecentFiles } from "../../store/recentFilesSlice";
+import { useTranslation } from "react-i18next";
+import { APP_NAME } from "../../utils/appInfo";
 
 const WelcomePage: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+
+  const { t } = useTranslation();
 
   const recentFiles = useAppSelector((state) => state.recentFiles.files);
 
@@ -31,7 +35,7 @@ const WelcomePage: React.FC = () => {
     dispatch(setIsNewFile(true));
     dispatch(setIsDirty(false));
     dispatch(setFilePath(null));
-    changeWindowTitle("Task Tree - New Project");
+    changeWindowTitle(APP_NAME + " - " + t('titleNewProject'));
     navigate("/home");
   };
 
@@ -77,24 +81,24 @@ const WelcomePage: React.FC = () => {
               }}
             >
               <Button variant="link" onClick={onFileNewClick}>
-                <FontAwesomeIcon icon={faFile} /> New File
+                <FontAwesomeIcon icon={faFile} /> {t('welcomePage.newFile')}
               </Button>
               <Button variant="link" onClick={onFileOpenClick}>
-                <FontAwesomeIcon icon={faFolderOpen} /> Open File...
+                <FontAwesomeIcon icon={faFolderOpen} /> {t('welcomePage.openFile')}
               </Button>
               <Link to='/about'>
                 <Button variant="link">
-                  <FontAwesomeIcon icon={faCircleInfo} /> About
+                  <FontAwesomeIcon icon={faCircleInfo} /> {t('about')}
                 </Button>
               </Link>
             </div>
           </Col>
           <Col xs={12} sm={6}>
             <div>
-              <strong>Recent Files</strong>
+              <strong>{t('welcomePage.recentFiles')}</strong>
               &nbsp;
               <Button
-                title="Clear"
+                title={t('clear')}
                 size="sm"
                 variant="link"
                 onClick={onRecentFilesClearClick}

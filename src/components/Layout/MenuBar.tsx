@@ -21,8 +21,11 @@ import {
   faSdCard,
 } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
+import { APP_NAME } from "../../utils/appInfo";
+import { useTranslation } from "react-i18next";
 
 const MenuBar: React.FC = () => {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { currentFile: currentFileInfo } = useAppSelector((state) => state);
 
@@ -32,14 +35,12 @@ const MenuBar: React.FC = () => {
     // If the file is "dirty", ask for confirmation
 
     if (fileIsDirty) {
-      const confirmed = await ask("Are you sure?");
+      const confirmed = await ask(t("exitConfirmation.youSure"));
       if (!confirmed) {
         return;
       }
 
-      const fileSaveConfirmed = await ask(
-        "Your project has unsaved changes. Do you want to save them?"
-      );
+      const fileSaveConfirmed = await ask(t("exitConfirmation.saveChanges"));
 
       if (fileSaveConfirmed) {
         const saveResult = await onFileSaveClicked();
@@ -54,7 +55,7 @@ const MenuBar: React.FC = () => {
     dispatch(setIsNewFile(true));
     dispatch(setIsDirty(false));
     dispatch(setFilePath(null));
-    changeWindowTitle("Task Tree - New Project");
+    changeWindowTitle(APP_NAME + " - " + t("titleNewProject"));
   };
 
   const onFileOpenClicked = async () => {
@@ -71,7 +72,7 @@ const MenuBar: React.FC = () => {
         return null;
       }
 
-      changeWindowTitle("Task Tree - " + fileDialogResult);
+      changeWindowTitle(APP_NAME + " - " + fileDialogResult);
 
       return fileDialogResult;
     } else {
@@ -81,7 +82,7 @@ const MenuBar: React.FC = () => {
         await saveFileTo(filePath);
       }
 
-      changeWindowTitle("Task Tree - " + filePath);
+      changeWindowTitle(APP_NAME + " - " + filePath);
 
       return filePath;
     }
@@ -94,17 +95,29 @@ const MenuBar: React.FC = () => {
   return (
     <Nav className="bg-light">
       <Nav.Item>
-        <Button title="New File" variant="link" onClick={onFileNewClicked}>
+        <Button
+          title={t("menuBar.newFile")}
+          variant="link"
+          onClick={onFileNewClicked}
+        >
           <FontAwesomeIcon icon={faFile} />
         </Button>
       </Nav.Item>
       <Nav.Item>
-        <Button title="Open File..." variant="link" onClick={onFileOpenClicked}>
+        <Button
+          title={t("menuBar.openFile")}
+          variant="link"
+          onClick={onFileOpenClicked}
+        >
           <FontAwesomeIcon icon={faFolderOpen} />
         </Button>
       </Nav.Item>
       <Nav.Item>
-        <Button title="Save File" variant="link" onClick={onFileSaveClicked}>
+        <Button
+          title={t("menuBar.saveFile")}
+          variant="link"
+          onClick={onFileSaveClicked}
+        >
           <FontAwesomeIcon
             icon={faFloppyDisk}
             color={currentFileInfo.isDirty ? "red" : undefined}
@@ -112,20 +125,24 @@ const MenuBar: React.FC = () => {
         </Button>
       </Nav.Item>
       <Nav.Item>
-        <Button title="Save As..." variant="link" onClick={onFileSaveAsClicked}>
+        <Button
+          title={t("menuBar.saveAs")}
+          variant="link"
+          onClick={onFileSaveAsClicked}
+        >
           <FontAwesomeIcon icon={faSdCard} />
         </Button>
       </Nav.Item>
-      <Nav.Item>
+      {/* <Nav.Item>
         <Link to={"/settings"}>
-          <Button title="Settings" variant="link">
+          <Button title={t("settings")} variant="link">
             <FontAwesomeIcon icon={faCog} />
           </Button>
         </Link>
-      </Nav.Item>
+      </Nav.Item> */}
       <Nav.Item>
         <Link to={"/about"}>
-          <Button title="About" variant="link">
+          <Button title={t("about")} variant="link">
             <FontAwesomeIcon icon={faCircleInfo} />
           </Button>
         </Link>

@@ -4,6 +4,7 @@ import { Button, Modal } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClose, faEdit } from "@fortawesome/free-solid-svg-icons";
 import { TaskPickerItem } from "./TaskPickerItem";
+import { useTranslation } from "react-i18next";
 
 interface TaskPickerProps {
   taskId: string | null;
@@ -19,9 +20,11 @@ const TaskPicker: React.FC<TaskPickerProps> = ({
   disabledTasksIds = [],
   onTaskIdChange,
   recursive = true,
-  placeholder = "None",
+  placeholder = "-",
   availableTasksIds = [],
 }) => {
+  const { t } = useTranslation();
+
   const pickedTask = useAppSelector((state) =>
     state.tasks.list.find((t) => t.id === taskId)
   );
@@ -71,14 +74,14 @@ const TaskPicker: React.FC<TaskPickerProps> = ({
           flexDirection: "row",
         }}
       >
-        <Button size="sm" title="Change" onClick={handleShowModal}>
+        <Button size="sm" title={t('change')} onClick={handleShowModal}>
           <FontAwesomeIcon icon={faEdit} />
         </Button>
         &nbsp;
         <Button
           size="sm"
           variant="danger"
-          title="Clear (set to none)"
+          title={t('clear')}
           onClick={onClear}
         >
           <FontAwesomeIcon icon={faClose} />
@@ -90,7 +93,7 @@ const TaskPicker: React.FC<TaskPickerProps> = ({
       </div>
       <Modal show={showModal} centered onHide={handleCloseModal}>
         <Modal.Header closeButton>
-          <Modal.Title>Select Task</Modal.Title>
+          <Modal.Title>{t('selectTask')}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div>

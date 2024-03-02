@@ -9,8 +9,11 @@ import { Button, Col, Container, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAdd } from "@fortawesome/free-solid-svg-icons";
+import { useTranslation } from "react-i18next";
 
 const MainPage: React.FC = () => {
+  const { t } = useTranslation();
+
   return (
     <div className="full-height" style={{ minHeight: "100%" }}>
       <Container style={{ height: '95%', maxWidth: "unset" }}>
@@ -21,7 +24,7 @@ const MainPage: React.FC = () => {
                 <div className="d-grid gap-2">
                   <Button size="sm">
                     <FontAwesomeIcon icon={faAdd} />
-                    &nbsp; New Task
+                    &nbsp; {t('newTask')}
                   </Button>
                 </div>
               </Link>

@@ -9,6 +9,7 @@ import {
 import { changeWindowTitle } from "./window";
 import { loadTasks } from "../store/tasksSlice";
 import { pushNewRecentFile } from "../store/recentFilesSlice";
+import { APP_NAME } from "./appInfo";
 
 const FILE_EXTENSION = "ttproj";
 
@@ -73,5 +74,5 @@ export const readFile = async (filePath: string) => {
   store.dispatch(setIsDirty(false));
   store.dispatch(setFilePath(filePath));
   store.dispatch(pushNewRecentFile(filePath));
-  changeWindowTitle("Task Tree - " + filePath);
-}
+  changeWindowTitle(APP_NAME + " - " + filePath);
+};

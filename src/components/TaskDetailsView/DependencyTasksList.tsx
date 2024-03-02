@@ -4,6 +4,7 @@ import { useAppDispatch } from "../../store/hooks";
 import { setSelectedTask } from "../../store/selectedTaskSlice";
 import { faDiagramProject } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useTranslation } from "react-i18next";
 
 interface DependencyTasksList {
   tasks: Task[];
@@ -16,6 +17,7 @@ const DependencyTasksList: React.FC<DependencyTasksList> = ({
   title,
   flipIcon
 }) => {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
   const handleItemClick = (taskId:  string) => {
@@ -35,7 +37,7 @@ const DependencyTasksList: React.FC<DependencyTasksList> = ({
       {title && <h6 className="unselectable" style={{marginBottom: 0, fontSize: '0.75rem', color: 'gray'}}>{icon}&nbsp;{title}</h6>}
       <div>
         {tasks.length === 0 ? (
-          <div>None</div>
+          <div>{t('taskDetails.noTasks')}</div>
         ) : (
           tasks.map((t) => (
             <div

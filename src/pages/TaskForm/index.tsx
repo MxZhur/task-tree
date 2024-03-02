@@ -23,8 +23,11 @@ import DifficultyIndicator from "../../components/TaskDetailsView/DifficultyIndi
 import { TaskPicker } from "../../components";
 import { TaskMultiPicker } from "../../components/TaskMultiPicker";
 import { setIsDirty } from "../../store/currentFileSlice";
+import { useTranslation } from "react-i18next";
 
 const TaskForm: React.FC = () => {
+  const { t } = useTranslation();
+
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
@@ -113,7 +116,10 @@ const TaskForm: React.FC = () => {
     let defaultBeforeTaskIndex: number =
       defaultNeighborTasksIds.findIndex((tId) => tId === taskId) + 1;
 
-    if (defaultBeforeTaskIndex < 0 || defaultBeforeTaskIndex >= defaultNeighborTasksIds.length) {
+    if (
+      defaultBeforeTaskIndex < 0 ||
+      defaultBeforeTaskIndex >= defaultNeighborTasksIds.length
+    ) {
       defaultBeforeTaskId = null;
     } else {
       defaultBeforeTaskId = defaultNeighborTasksIds[defaultBeforeTaskIndex];
@@ -198,15 +204,15 @@ const TaskForm: React.FC = () => {
   return (
     <Container>
       <div>
-        <h5>{taskId ? "Edit Task" : "New Task"}</h5>
+        <h5>{taskId ? t('editTask') : t("newTask")}</h5>
       </div>
       <Form onSubmit={handleSubmit}>
         {/* Name */}
         <Form.Group className="mb-3">
           <Form.Control
             type="text"
-            placeholder="Name"
-            title="Name"
+            placeholder={t("taskFormFields.labelName")}
+            title={t("taskFormFields.labelName")}
             value={name}
             onChange={(e) => setName(e.target.value)}
             required={true}
@@ -219,19 +225,19 @@ const TaskForm: React.FC = () => {
         <textarea
           className="form-control"
           rows={3}
-          title="Description"
-          placeholder="Description"
+          title={t("taskFormFields.labelDescription")}
+          placeholder={t("taskFormFields.labelDescription")}
           onChange={(e) => setDescription(e.target.value)}
           value={description}
         ></textarea>
 
         {/* Progress */}
         <Form.Group className="mt-3 mb-3">
-          <Form.Label>Progress</Form.Label>
+          <Form.Label>{t("taskFormFields.labelProgress")}</Form.Label>
           {task === undefined || task?.childTasks.length === 0 ? (
             <Row>
               <Col xs={2} sm={1}>
-                <Button variant="success" title="Mark as done">
+                <Button variant="success" title={t("taskFormFields.btnMarkAsDone")}>
                   <FontAwesomeIcon
                     icon={faCheck}
                     onClick={() => setProgress(100)}
@@ -258,10 +264,7 @@ const TaskForm: React.FC = () => {
                 now={progress}
                 label={progress + "%"}
               />
-              <Form.Text>
-                Calculated from child tasks. Change their progress if you want
-                to change this.
-              </Form.Text>
+              <Form.Text>{t("taskFormFields.msgProgressCalculated")}</Form.Text>
             </div>
           )}
         </Form.Group>
@@ -269,7 +272,7 @@ const TaskForm: React.FC = () => {
         <Row className="mt-3">
           <Col xs={12} sm={6}>
             {/* Priority */}
-            <Form.Label>Priority</Form.Label>
+            <Form.Label>{t("taskFormFields.labelPriority")}</Form.Label>
             <Row>
               <Col xs={1}>
                 <div
@@ -288,18 +291,28 @@ const TaskForm: React.FC = () => {
                   value={priority}
                   onChange={(e) => setPriority(parseInt(e.target.value))}
                 >
-                  <option value={TASK_PRIORITIES.critical}>Critical</option>
-                  <option value={TASK_PRIORITIES.high}>High</option>
-                  <option value={TASK_PRIORITIES.medium}>Meduim</option>
-                  <option value={TASK_PRIORITIES.low}>Low</option>
-                  <option value={TASK_PRIORITIES.none}>None</option>
+                  <option value={TASK_PRIORITIES.critical}>
+                    {t("priority.critical")}
+                  </option>
+                  <option value={TASK_PRIORITIES.high}>
+                    {t("priority.high")}
+                  </option>
+                  <option value={TASK_PRIORITIES.medium}>
+                    {t("priority.medium")}
+                  </option>
+                  <option value={TASK_PRIORITIES.low}>
+                    {t("priority.low")}
+                  </option>
+                  <option value={TASK_PRIORITIES.none}>
+                    {t("priority.none")}
+                  </option>
                 </Form.Select>
               </Col>
             </Row>
           </Col>
           <Col xs={12} sm={6}>
             {/* Difficulty */}
-            <Form.Label>Difficulty</Form.Label>
+            <Form.Label>{t("taskFormFields.labelDifficulty")}</Form.Label>
             <Row>
               <Col xs={1}>
                 <div
@@ -318,9 +331,15 @@ const TaskForm: React.FC = () => {
                   value={difficulty}
                   onChange={(e) => setDifficulty(parseFloat(e.target.value))}
                 >
-                  <option value={TASK_DIFFICULTIES.hard}>Hard</option>
-                  <option value={TASK_DIFFICULTIES.normal}>Normal</option>
-                  <option value={TASK_DIFFICULTIES.easy}>Easy</option>
+                  <option value={TASK_DIFFICULTIES.hard}>
+                    {t("difficulty.hard")}
+                  </option>
+                  <option value={TASK_DIFFICULTIES.normal}>
+                    {t("difficulty.normal")}
+                  </option>
+                  <option value={TASK_DIFFICULTIES.easy}>
+                    {t("difficulty.easy")}
+                  </option>
                 </Form.Select>
               </Col>
             </Row>
@@ -331,24 +350,25 @@ const TaskForm: React.FC = () => {
           <Col xs={12} sm={6}>
             {/* Parent Task (Button + Modal) */}
             <Form.Group>
-              <Form.Label>Parent Task</Form.Label>
+              <Form.Label>{t("taskFormFields.labelParentTask")}</Form.Label>
               <TaskPicker
                 taskId={parentTaskId}
                 disabledTasksIds={[task?.id ?? ""]}
                 onTaskIdChange={(tId) => changeParentTask(tId)}
+                placeholder={t("taskFormFields.msgParentTaskNone")}
               />
             </Form.Group>
           </Col>
           <Col xs={12} sm={6}>
             {/* Before Task (Button + Modal) */}
             <Form.Group>
-              <Form.Label>Place Before</Form.Label>
+              <Form.Label>{t("taskFormFields.labelPlaceBefore")}</Form.Label>
               <TaskPicker
                 taskId={beforeTaskId}
                 disabledTasksIds={[task?.id ?? ""]}
                 onTaskIdChange={(tId) => setBeforeTaskId(tId)}
                 availableTasksIds={neighborTasksIds}
-                placeholder={"End of list"}
+                placeholder={t("taskFormFields.msgEndOfList")}
                 recursive={false}
               />
             </Form.Group>
@@ -361,7 +381,7 @@ const TaskForm: React.FC = () => {
             <Form.Group>
               <Form.Label>
                 <FontAwesomeIcon icon={faDiagramProject} rotation={180} />{" "}
-                Dependency Tasks
+                {t("taskFormFields.labelDependencyTasks")}
               </Form.Label>
               <TaskMultiPicker
                 availableTasksIds={neighborTasksIds}
@@ -390,7 +410,8 @@ const TaskForm: React.FC = () => {
             {/* Blocked Tasks (Block + Modal) */}
             <Form.Group>
               <Form.Label>
-                <FontAwesomeIcon icon={faDiagramProject} /> Blocked Tasks
+                <FontAwesomeIcon icon={faDiagramProject} />{" "}
+                {t("taskFormFields.labelBlockedTasks")}
               </Form.Label>
 
               <TaskMultiPicker
@@ -418,10 +439,10 @@ const TaskForm: React.FC = () => {
 
         <div className="mt-3 mb-3 pb-4">
           <Button variant="success" type="submit">
-            Save
+            {t("taskFormFields.btnSubmit")}
           </Button>
           &nbsp;
-          <Button onClick={goBack}>Cancel</Button>
+          <Button onClick={goBack}>{t("cancel")}</Button>
         </div>
       </Form>
     </Container>

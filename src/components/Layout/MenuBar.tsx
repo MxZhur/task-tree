@@ -12,7 +12,7 @@ import {
 import { changeWindowTitle } from "../../utils/window";
 import { ask } from "@tauri-apps/api/dialog";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFile, faFileExport, faFloppyDisk, faFolderOpen, faSdCard } from "@fortawesome/free-solid-svg-icons";
+import { faFile, faFloppyDisk, faFolderOpen, faSdCard } from "@fortawesome/free-solid-svg-icons";
 
 const MenuBar: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -96,8 +96,8 @@ const MenuBar: React.FC = () => {
         </Button>
       </Nav.Item>
       <Nav.Item>
-        <Button title="Save File" variant="link" onClick={onFileSaveClicked}>
-        <FontAwesomeIcon icon={faFloppyDisk} />
+        <Button title="Save File" variant='link' onClick={onFileSaveClicked}>
+        <FontAwesomeIcon icon={faFloppyDisk} color={currentFileInfo.isDirty ? 'red' : undefined} />
         </Button>
       </Nav.Item>
       <Nav.Item>

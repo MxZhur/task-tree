@@ -1,11 +1,11 @@
 .task-graph-container {
-    border: 1px solid gray;
-    border-radius: 10px;
-  
-    background-color: white;
-    padding: 10px;
-  
-    max-height: 45%;
-    height: 45%;
-    width: auto;
+  border: 1px solid gray;
+  border-radius: 10px;
+
+  background-color: white;
+  padding: 10px;
+
+  max-height: 45%;
+  height: 45%;
+  width: auto;
 }

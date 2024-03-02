@@ -19,6 +19,8 @@ import DependencyTasksList from "./DependencyTasksList";
 import { Link } from "react-router-dom";
 import { ask } from "@tauri-apps/api/dialog";
 import { deleteTask } from "../../store/tasksSlice";
+import { setIsDirty } from "../../store/currentFileSlice";
+import { setSelectedTask } from "../../store/selectedTaskSlice";
 
 const TaskDetailsView: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -55,6 +57,8 @@ const TaskDetailsView: React.FC = () => {
     }
 
     dispatch(deleteTask(task?.id ?? ""));
+    dispatch(setSelectedTask(null));
+    dispatch(setIsDirty(true));
   };
 
   if (task === undefined) {

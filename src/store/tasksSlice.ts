@@ -128,10 +128,14 @@ const initialState: TasksState = {
   ],
 };
 
-function calcAvgProgress(
+export const calcAvgProgress = (
   tasks: Draft<Task>[] | Task[],
   digitsAfterPoint: number = 1
-) {
+) => {
+  if (tasks.length === 0) {
+    return 0;
+  }
+
   const progressWeightedSum = tasks
     .map((t) => (t.progress ?? 0) * (t.difficulty ?? 1))
     .reduce((accumulator, currentValue) => accumulator + currentValue, 0);
@@ -150,7 +154,7 @@ function calcAvgProgress(
   } else {
     return avgProgressRaw;
   }
-}
+};
 
 function recalculateProgress(state: Draft<TasksState>) {
   const leafTasksIDs = state.list
@@ -453,8 +457,14 @@ const tasksSlice = createSlice({
   },
 });
 
-export const { addTask, updateTask, updateProgress, deleteTask, clearTasks, loadTasks } =
-  tasksSlice.actions;
+export const {
+  addTask,
+  updateTask,
+  updateProgress,
+  deleteTask,
+  clearTasks,
+  loadTasks,
+} = tasksSlice.actions;
 
 // TODO: Selectors:
 // - Find all top-level tasks

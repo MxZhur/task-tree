@@ -1,5 +1,10 @@
 import React from "react";
-import { TaskTree, TaskDetailsView, TaskDependencyGraph } from "../../components";
+import {
+  TaskTree,
+  TaskDetailsView,
+  TaskDependencyGraph,
+  ProjectOverallProgressBar,
+} from "../../components";
 import { Button, Col, Container, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -8,18 +13,17 @@ import { faAdd } from "@fortawesome/free-solid-svg-icons";
 const MainPage: React.FC = () => {
   return (
     <div className="full-height" style={{ minHeight: "100%" }}>
-      <Container className="full-height" style={{ maxWidth: "unset" }}>
+      <Container style={{ height: '95%', maxWidth: "unset" }}>
         <Row className="full-height">
           <Col xs={5} className="full-height">
             <div className="mb-1">
-              <Link to={'/new'}>
-              <div className="d-grid gap-2">
-                <Button size="sm">
-                  <FontAwesomeIcon icon={faAdd} />
-                  &nbsp;
-                  New Task
-                </Button>
-              </div>
+              <Link to={"/new"}>
+                <div className="d-grid gap-2">
+                  <Button size="sm">
+                    <FontAwesomeIcon icon={faAdd} />
+                    &nbsp; New Task
+                  </Button>
+                </div>
               </Link>
             </div>
             <TaskTree />
@@ -28,6 +32,7 @@ const MainPage: React.FC = () => {
             <TaskDetailsView />
             <TaskDependencyGraph />
           </Col>
+          <ProjectOverallProgressBar />
         </Row>
       </Container>
     </div>

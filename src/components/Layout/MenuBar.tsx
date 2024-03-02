@@ -117,14 +117,14 @@ const MenuBar: React.FC = () => {
         </Button>
       </Nav.Item>
       <Nav.Item>
-        <Link to={'/settings'}>
+        <Link to={"/settings"}>
           <Button title="Settings" variant="link">
             <FontAwesomeIcon icon={faCog} />
           </Button>
         </Link>
       </Nav.Item>
       <Nav.Item>
-        <Link to={'/about'}>
+        <Link to={"/about"}>
           <Button title="About" variant="link">
             <FontAwesomeIcon icon={faCircleInfo} />
           </Button>

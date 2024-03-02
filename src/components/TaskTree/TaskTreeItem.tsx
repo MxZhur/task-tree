@@ -49,7 +49,7 @@ const TaskTreeItem: React.FC<TaskTreeItemProps> = ({
   };
 
   const handleDoubleClick = () => {
-    navigate("/edit/" + task.id);
+    navigate("/home/edit/" + task.id);
   };
 
   const handleArrowClick = () => {

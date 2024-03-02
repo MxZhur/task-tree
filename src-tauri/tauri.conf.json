@@ -37,7 +37,8 @@
         "removeDir": false,
         "removeFile": false,
         "renameFile": false,
-        "writeFile": true
+        "writeFile": true,
+        "scope": ["**"]
       },
       "process": {
         "all": false,

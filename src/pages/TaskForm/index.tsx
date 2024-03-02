@@ -124,8 +124,6 @@ const TaskForm: React.FC = () => {
     defaultBeforeTaskId
   );
 
-  console.log(beforeTaskId);
-
   const [neighborTasksIds, setNeighborTasksIds] = useState(
     defaultNeighborTasksIds
   );

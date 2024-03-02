@@ -17,7 +17,7 @@ const MainPage: React.FC = () => {
         <Row className="full-height">
           <Col xs={5} className="full-height">
             <div className="mb-1">
-              <Link to={"/new"}>
+              <Link to={"/home/new"}>
                 <div className="d-grid gap-2">
                   <Button size="sm">
                     <FontAwesomeIcon icon={faAdd} />

@@ -56,76 +56,8 @@ export type TasksState = {
 };
 
 const initialState: TasksState = {
-  topLevelIDs: ["qwe", "asd"],
-  list: [
-    {
-      id: "qwe",
-      name: "Qwerty",
-      description: "",
-      priority: 1,
-      progress: 50,
-      difficulty: TASK_DIFFICULTIES.easy,
-      parentTaskId: null,
-      childTasks: ["wsx", "qaz", "rfv"],
-      dependencyTasks: [],
-    },
-    {
-      id: "asd",
-      name: "Asdfgh",
-      description: "",
-      priority: 2,
-      progress: 100,
-      difficulty: TASK_DIFFICULTIES.normal,
-      parentTaskId: null,
-      childTasks: ["edc"],
-      dependencyTasks: ["qwe"],
-    },
-    {
-      id: "qaz",
-      name: "Qazaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-      description:
-        "Qazaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-      priority: 3,
-      progress: 50,
-      difficulty: TASK_DIFFICULTIES.easy,
-      parentTaskId: "qwe",
-      childTasks: [],
-      dependencyTasks: ["wsx"],
-    },
-    {
-      id: "wsx",
-      name: "Wsx",
-      description: "",
-      priority: 4,
-      progress: 50,
-      difficulty: TASK_DIFFICULTIES.easy,
-      parentTaskId: "qwe",
-      childTasks: [],
-      dependencyTasks: [],
-    },
-    {
-      id: "rfv",
-      name: "Rfv",
-      description: "",
-      priority: 5,
-      progress: 10,
-      difficulty: 1,
-      parentTaskId: "qwe",
-      childTasks: [],
-      dependencyTasks: ["wsx", "qaz"],
-    },
-    {
-      id: "edc",
-      name: "Edc",
-      description: "",
-      priority: 1,
-      progress: 100,
-      difficulty: TASK_DIFFICULTIES.hard,
-      parentTaskId: "asd",
-      childTasks: [],
-      dependencyTasks: [],
-    },
-  ],
+  topLevelIDs: [],
+  list: [],
 };
 
 export const calcAvgProgress = (
@@ -358,8 +290,6 @@ const tasksSlice = createSlice({
           ) {
             continue;
           }
-
-          console.log(anotherTask);
 
           anotherTask.dependencyTasks = anotherTask.dependencyTasks.filter(
             (el) => el !== updatedTask?.id

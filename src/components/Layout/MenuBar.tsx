@@ -13,11 +13,14 @@ import { changeWindowTitle } from "../../utils/window";
 import { ask } from "@tauri-apps/api/dialog";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faCircleInfo,
+  faCog,
   faFile,
   faFloppyDisk,
   faFolderOpen,
   faSdCard,
 } from "@fortawesome/free-solid-svg-icons";
+import { Link } from "react-router-dom";
 
 const MenuBar: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -112,6 +115,20 @@ const MenuBar: React.FC = () => {
         <Button title="Save As..." variant="link" onClick={onFileSaveAsClicked}>
           <FontAwesomeIcon icon={faSdCard} />
         </Button>
+      </Nav.Item>
+      <Nav.Item>
+        <Link to={'/settings'}>
+          <Button title="Settings" variant="link">
+            <FontAwesomeIcon icon={faCog} />
+          </Button>
+        </Link>
+      </Nav.Item>
+      <Nav.Item>
+        <Link to={'/about'}>
+          <Button title="About" variant="link">
+            <FontAwesomeIcon icon={faCircleInfo} />
+          </Button>
+        </Link>
       </Nav.Item>
     </Nav>
   );

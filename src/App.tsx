@@ -1,6 +1,6 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import "./App.css";
-import { MainPage, TaskForm } from "./pages";
+import { AboutPage, MainPage, TaskForm, WelcomePage } from "./pages";
 import Layout from "./components/Layout";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
@@ -8,6 +8,8 @@ import { readFile } from "./utils/file";
 import { listen } from "@tauri-apps/api/event";
 
 function App() {
+  const navigate = useNavigate();
+
   // TODO: Fix the close request handler
   // const unlistenCloseRequest = appWindow.onCloseRequested(async (event) => {
   //   const fileIsDirty = store.getState().currentFile.isDirty;
@@ -53,16 +55,19 @@ function App() {
   listen("tauri://file-drop", async (event) => {
     const filePath: string = event.payload[0];
     await readFile(filePath);
+    navigate('/home');
   });
 
   return (
     <Routes>
-      <Route path="/" element={<Layout />}>
-        <Route index element={<MainPage />}></Route>
+      <Route path="/" element={<WelcomePage />} />
+      <Route path="home" element={<Layout />}>
+        <Route index element={<MainPage />} />
         <Route path="new" element={<TaskForm />} />
         <Route path="new/:parentTask" element={<TaskForm />} />
         <Route path="edit/:taskId" element={<TaskForm />} />
       </Route>
+      <Route path="/about" element={<AboutPage />} />
     </Routes>
   );
 }

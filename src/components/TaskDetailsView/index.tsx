@@ -95,13 +95,13 @@ const TaskDetailsView: React.FC = () => {
             alignItems: "center",
           }}
         >
-          <Link to={"/new/" + task.id}>
+          <Link to={"/home/new/" + task.id}>
             <Button size="sm" variant="primary">
               <FontAwesomeIcon icon={faAdd} /> Subtask
             </Button>
           </Link>
           &nbsp;
-          <Link to={"/edit/" + task.id}>
+          <Link to={"/home/edit/" + task.id}>
             <Button size="sm" variant="success">
               <FontAwesomeIcon icon={faEdit} /> Edit
             </Button>

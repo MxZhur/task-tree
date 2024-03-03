@@ -47,12 +47,6 @@ export type UpdateProgressFormFields = {
   progress: number;
 };
 
-export type MoveTaskFormFields = {
-  id: string;
-  parentId: string | null;
-  beforeTaskId: string | null;
-};
-
 export type TasksState = {
   topLevelIDs: string[];
   list: Task[];

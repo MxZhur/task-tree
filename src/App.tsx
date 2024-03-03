@@ -52,7 +52,7 @@ function App() {
   //   }
   // });
 
-  listen("tauri://file-drop", async (event) => {
+  listen<string[]>("tauri://file-drop", async (event) => {
     const filePath: string = event.payload[0];
     await readFile(filePath);
     navigate('/home');

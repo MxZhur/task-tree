@@ -24,6 +24,7 @@ import { TaskPicker } from "../../components";
 import { TaskMultiPicker } from "../../components/TaskMultiPicker";
 import { setIsDirty } from "../../store/currentFileSlice";
 import { useTranslation } from "react-i18next";
+import MDEditor from "@uiw/react-md-editor";
 
 const TaskForm: React.FC = () => {
   const { t } = useTranslation();
@@ -77,7 +78,7 @@ const TaskForm: React.FC = () => {
   });
 
   const [name, setName] = useState<string>(task ? task.name : "");
-  const [description, setDescription] = useState<string>(
+  const [description, setDescription] = useState<string | undefined>(
     task !== undefined ? task.description : ""
   );
   const [progress, setProgress] = useState<number>(
@@ -165,11 +166,15 @@ const TaskForm: React.FC = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    if (name.trim().length === 0) {
+      return;
+    }
+
     if (taskId === undefined) {
       dispatch(
         addTask({
-          name,
-          description,
+          name: name.trim(),
+          description: description ?? "",
           progress,
           priority,
           difficulty,
@@ -184,8 +189,8 @@ const TaskForm: React.FC = () => {
       dispatch(
         updateTask({
           id: taskId,
-          name,
-          description,
+          name: name.trim(),
+          description: description ?? "",
           progress,
           priority,
           difficulty,
@@ -204,7 +209,7 @@ const TaskForm: React.FC = () => {
   return (
     <Container>
       <div>
-        <h5>{taskId ? t('editTask') : t("newTask")}</h5>
+        <h5>{taskId ? t("editTask") : t("newTask")}</h5>
       </div>
       <Form onSubmit={handleSubmit}>
         {/* Name */}
@@ -222,14 +227,23 @@ const TaskForm: React.FC = () => {
         </Form.Group>
 
         {/* Description */}
-        <textarea
+        {/* <textarea
           className="form-control"
           rows={3}
           title={t("taskFormFields.labelDescription")}
           placeholder={t("taskFormFields.labelDescription")}
           onChange={(e) => setDescription(e.target.value)}
           value={description}
-        ></textarea>
+        ></textarea> */}
+
+        <Form.Group className="mt-3 mb-3">
+          <Form.Label>{t("taskFormFields.labelDescription")}</Form.Label>
+          <MDEditor
+            value={description}
+            preview="edit"
+            onChange={setDescription}
+          />
+        </Form.Group>
 
         {/* Progress */}
         <Form.Group className="mt-3 mb-3">
@@ -237,7 +251,10 @@ const TaskForm: React.FC = () => {
           {task === undefined || task?.childTasks.length === 0 ? (
             <Row>
               <Col xs={2} sm={1}>
-                <Button variant="success" title={t("taskFormFields.btnMarkAsDone")}>
+                <Button
+                  variant="success"
+                  title={t("taskFormFields.btnMarkAsDone")}
+                >
                   <FontAwesomeIcon
                     icon={faCheck}
                     onClick={() => setProgress(100)}

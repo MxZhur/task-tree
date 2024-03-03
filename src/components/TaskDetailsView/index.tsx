@@ -22,6 +22,7 @@ import { deleteTask } from "../../store/tasksSlice";
 import { setIsDirty } from "../../store/currentFileSlice";
 import { setSelectedTask } from "../../store/selectedTaskSlice";
 import { useTranslation } from "react-i18next";
+import MDEditor from "@uiw/react-md-editor";
 
 const TaskDetailsView: React.FC = () => {
   const { t } = useTranslation();
@@ -157,7 +158,7 @@ const TaskDetailsView: React.FC = () => {
 
       {/* Description */}
       {task?.description !== null && task!.description.length > 0 && (
-        <>
+        <div className="mb-1">
           <Button
             size="sm"
             variant="link"
@@ -179,8 +180,15 @@ const TaskDetailsView: React.FC = () => {
               {t("taskDetails.description")}
             </div>
           </Button>
-          {isDescriptionExpanded && <div>{task?.description}</div>}
-        </>
+          {isDescriptionExpanded && (
+            <div>
+              <MDEditor.Markdown
+                source={task?.description ?? ""}
+                style={{ whiteSpace: "pre-wrap" }}
+              />
+            </div>
+          )}
+        </div>
       )}
 
       <Row>

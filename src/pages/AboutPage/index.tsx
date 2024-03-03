@@ -3,8 +3,11 @@ import { Button, Container } from "react-bootstrap";
 import { AppLogo } from "../../components";
 import { useNavigate } from "react-router-dom";
 import { APP_AUTHOR, APP_RELEASE_YEAR, APP_VERSION } from "../../utils/appInfo";
+import { useTranslation } from "react-i18next";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const AboutPage: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const goBack = () => {
@@ -38,6 +41,22 @@ const AboutPage: React.FC = () => {
           <div>Version {APP_VERSION}</div>
           <div>
             {APP_RELEASE_YEAR} &#169; {APP_AUTHOR}
+          </div>
+          <div>
+            {t("aboutPage.madeWith")}
+            &nbsp;
+            <a href="https://reactjs.org" target="_blank">
+              React
+            </a>
+            &nbsp;+&nbsp;
+            <a href="https://tauri.app" target="_blank">
+              Tauri
+            </a>
+          </div>
+          <div>
+            <a href="https://github.com/MxZhur/task-tree" target="_blank">
+              {t("aboutPage.githubPage")}
+            </a>
           </div>
           <div>
             <Button onClick={goBack}>Back</Button>

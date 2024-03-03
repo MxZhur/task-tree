@@ -88,6 +88,10 @@ i18n
             saveChanges:
               "Your project has unsaved changes. Do you want to save them?",
           },
+          aboutPage: {
+            madeWith: 'Made with',
+            githubPage: 'GitHub page',
+          },
         },
       },
       ru: {
@@ -165,6 +169,10 @@ i18n
             youSure: "Вы уверены?",
             saveChanges:
               "В проекте есть несохранённые изменения. Хотите ли вы их сохранить?",
+          },
+          aboutPage: {
+            madeWith: 'Сделано с помощью',
+            githubPage: 'Страница на GitHub',
           },
         },
       },

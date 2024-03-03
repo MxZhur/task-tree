@@ -5,6 +5,7 @@ import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { openFile, saveFileAs, saveFileTo } from "../../utils/file";
 import { clearTasks } from "../../store/tasksSlice";
 import {
+  selectCurrentFileInfo,
   setFilePath,
   setIsDirty,
   setIsNewFile,
@@ -14,7 +15,6 @@ import { ask } from "@tauri-apps/api/dialog";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCircleInfo,
-  faCog,
   faFile,
   faFloppyDisk,
   faFolderOpen,
@@ -27,7 +27,7 @@ import { useTranslation } from "react-i18next";
 const MenuBar: React.FC = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const { currentFile: currentFileInfo } = useAppSelector((state) => state);
+  const currentFileInfo = useAppSelector(selectCurrentFileInfo);
 
   const onFileNewClicked = async () => {
     const fileIsDirty = currentFileInfo.isDirty;

@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClose, faEdit } from "@fortawesome/free-solid-svg-icons";
 import { TaskPickerItem } from "./TaskPickerItem";
 import { useTranslation } from "react-i18next";
+import { Task, makeSelectTaskById, selectAllTasks, selectAllTopLevelTasks, selectTopLevelIDs } from "../../store/tasksSlice";
 
 interface TaskPickerProps {
   taskId: string | null;
@@ -25,21 +26,22 @@ const TaskPicker: React.FC<TaskPickerProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const pickedTask = useAppSelector((state) =>
-    state.tasks.list.find((t) => t.id === taskId)
-  );
+  const pickedTask = useAppSelector(makeSelectTaskById(taskId));
 
-  const topLevelTasks = useAppSelector((state) => {
-    if (availableTasksIds !== undefined && availableTasksIds.length > 0) {
-      return availableTasksIds
-        .map((tID) => state.tasks.list.find((t) => t.id === tID) ?? null)
-        .filter((e) => e !== null);
-    } else {
-      return state.tasks.topLevelIDs
-        .map((tID) => state.tasks.list.find((t) => t.id === tID) ?? null)
-        .filter((e) => e !== null);
-    }
-  });
+  const allTasks: Task[] = useAppSelector(selectAllTasks);
+  const allTopLevelTasksIds = useAppSelector(selectTopLevelIDs);
+
+  let tasks;
+
+  if (availableTasksIds !== undefined && availableTasksIds.length > 0) {
+    tasks = availableTasksIds
+      .map((tID) => allTasks.find((t) => t.id === tID) ?? null)
+      .filter((e) => e !== null);
+  } else {
+    tasks = allTopLevelTasksIds
+      .map((tID) => allTasks.find((t) => t.id === tID) ?? null)
+      .filter((e) => e !== null);
+  }
 
   let taskNameJsx;
 
@@ -97,7 +99,7 @@ const TaskPicker: React.FC<TaskPickerProps> = ({
         </Modal.Header>
         <Modal.Body>
           <div>
-            {topLevelTasks.map((t) => (
+            {tasks.map((t) => (
               <TaskPickerItem
                 key={t?.id}
                 task={t!}

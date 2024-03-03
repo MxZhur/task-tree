@@ -16,6 +16,10 @@ import {
   TASK_PRIORITIES,
   Task,
   addTask,
+  makeSelectBlockedTasksIds,
+  makeSelectTaskById,
+  selectAllTasks,
+  selectTopLevelIDs,
   updateTask,
 } from "../../store/tasksSlice";
 import PriorityIndicator from "../../components/TaskDetailsView/PriorityIndicator";
@@ -36,16 +40,10 @@ const TaskForm: React.FC = () => {
 
   const { taskId, parentTask: paramParentTaskId } = useParams();
 
-  const task = useAppSelector((state) => {
-    if (!taskId) {
-      return undefined;
-    }
+  const task = useAppSelector(makeSelectTaskById(taskId));
 
-    return state.tasks.list.find((t) => t.id === taskId);
-  });
-
-  const topLevelTasksIDs = useAppSelector((state) => state.tasks.topLevelIDs);
-  const allTasks: Task[] = useAppSelector((state) => state.tasks.list);
+  const topLevelTasksIDs = useAppSelector(selectTopLevelIDs);
+  const allTasks: Task[] = useAppSelector(selectAllTasks);
 
   const defaultNeighborTasksIds = useAppSelector((state) => {
     let parentId: string | null;
@@ -71,11 +69,7 @@ const TaskForm: React.FC = () => {
     }
   });
 
-  const defaultBlockedTasksIds = useAppSelector((state) => {
-    return state.tasks.list
-      .filter((t) => t.dependencyTasks.includes(task?.id ?? ""))
-      .map((t) => t.id);
-  });
+  const defaultBlockedTasksIds = useAppSelector(makeSelectBlockedTasksIds(task));
 
   const [name, setName] = useState<string>(task ? task.name : "");
   const [description, setDescription] = useState<string | undefined>(

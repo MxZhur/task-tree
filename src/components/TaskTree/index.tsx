@@ -2,13 +2,10 @@ import React, { useState } from "react";
 import { useAppSelector } from "../../store/hooks";
 import { TaskTreeItem } from "./TaskTreeItem";
 import "./index.css";
+import { selectAllTopLevelTasks } from "../../store/tasksSlice";
 
 const TaskTree: React.FC = () => {
-  const tasks = useAppSelector((state) => {
-    return state.tasks.topLevelIDs
-      .map((tID) => state.tasks.list.find((t) => t.id === tID) ?? null)
-      .filter((e) => e !== null);
-  });
+  const tasks = useAppSelector(selectAllTopLevelTasks);
 
   const [collapsedItems, setCollapsedItems] = useState<string[]>([]);
 

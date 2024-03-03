@@ -1,6 +1,6 @@
 import React from "react";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
-import { Task } from "../../store/tasksSlice";
+import { Task, makeSelectChildTasks } from "../../store/tasksSlice";
 import "./TaskTreeItem.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -30,15 +30,7 @@ const TaskTreeItem: React.FC<TaskTreeItemProps> = ({
   const isExpanded =
     collapsedItems !== undefined && !collapsedItems?.includes(task.id);
 
-  const childTasks = useAppSelector((state) => {
-    if (!isExpanded) {
-      return [];
-    }
-
-    return task.childTasks
-      .map((tID) => state.tasks.list.find((t) => t.id === tID))
-      .filter((e) => e !== undefined);
-  });
+  const childTasks = useAppSelector(makeSelectChildTasks(task));
 
   const isSelected = useAppSelector(
     (state) => state.selectedTask.taskId === task.id

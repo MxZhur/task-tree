@@ -7,6 +7,7 @@ import { TaskMultiPickerListItem } from "./TaskMultiPickerListItem";
 import "./index.css";
 import { TaskPickerItem } from "../TaskPicker/TaskPickerItem";
 import { useTranslation } from "react-i18next";
+import { makeSelectTasksByIds } from "../../store/tasksSlice";
 
 interface TaskMultiPickerProps {
   selectedTasksIds: string[];
@@ -25,13 +26,8 @@ const TaskMultiPicker: React.FC<TaskMultiPickerProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const selectedTasks = useAppSelector((state) =>
-    state.tasks.list.filter((t) => selectedTasksIds.includes(t.id))
-  );
-
-  const availableTasks = useAppSelector((state) =>
-    state.tasks.list.filter((t) => availableTasksIds.includes(t.id))
-  );
+  const selectedTasks = useAppSelector(makeSelectTasksByIds(selectedTasksIds));
+  const availableTasks = useAppSelector(makeSelectTasksByIds(availableTasksIds));
 
   const [showModal, setShowModal] = useState(false);
 

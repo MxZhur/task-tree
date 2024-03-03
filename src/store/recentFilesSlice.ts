@@ -11,7 +11,7 @@ const initialState: RecentFilesState = {
 };
 
 const recentFilesSlice = createSlice({
-  name: "tasks",
+  name: "recentFiles",
   initialState,
   reducers: {
     pushNewRecentFile(state, action: PayloadAction<string>) {

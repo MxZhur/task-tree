@@ -1,4 +1,7 @@
 import { createSlice, PayloadAction, nanoid, Draft } from "@reduxjs/toolkit";
+import { RootState } from ".";
+import { selectSelectedTaskId } from "./selectedTaskSlice";
+import { createAppSelector } from "./hooks";
 
 export type Task = {
   id: string;
@@ -396,17 +399,106 @@ export const {
   loadTasks,
 } = tasksSlice.actions;
 
-// TODO: Selectors:
-// - Find all top-level tasks
+// Selectors
 
-// export const selectAllTopLevelTasks = (state) => {
-//   const topLevelTasks = state.tasks.topLevelIDs
-//       .map((tID) => state.list.find((t) => t.id === tID) ?? null)
-//       .filter((e) => e !== null);
-// }
+export const selectTopLevelIDs = (state: RootState) => state.tasks.topLevelIDs;
+export const selectAllTasks = (state: RootState) => state.tasks.list;
 
-// - Find all child tasks by parent task ID
+export const selectAllTopLevelTasks = createAppSelector(
+  selectTopLevelIDs,
+  selectAllTasks,
+  (topLevelIDs, allTasks) =>
+    topLevelIDs
+      .map((tID) => allTasks.find((t) => t.id === tID) ?? null)
+      .filter((e) => e !== null)
+);
 
-// - Get task by ID
+export const selectSelectedTask = createAppSelector(
+  selectSelectedTaskId,
+  selectAllTasks,
+  (selTaskId, allTasks) => allTasks.find((t) => t.id === selTaskId)
+);
+
+export const makeSelectNeighborTasks = (task: Task | undefined) => {
+  return createAppSelector(
+    [selectAllTasks, selectTopLevelIDs, (state) => task],
+    (tasks, topLevelIDs, t) => {
+      if (t === undefined) {
+        return [];
+      }
+
+      if (t.parentTaskId === null) {
+        return tasks.filter((filteredTask) =>
+          topLevelIDs.includes(filteredTask.id)
+        );
+      } else {
+        return tasks.filter(
+          (filteredTask) => t.parentTaskId === filteredTask.parentTaskId
+        );
+      }
+    }
+  );
+};
+
+export const makeSelectDependencyTasks = (task: Task | undefined) => {
+  return createAppSelector([selectAllTasks, (state) => task], (tasks, t) => {
+    if (t === undefined) {
+      return [];
+    }
+    return tasks.filter((filteredTask) =>
+      t.dependencyTasks.includes(filteredTask.id)
+    );
+  });
+};
+
+export const makeSelectBlockedTasks = (task: Task | undefined) => {
+  return createAppSelector([selectAllTasks, (state) => task], (tasks, t) => {
+    if (t === undefined) {
+      return [];
+    }
+    return tasks.filter((filteredTask) =>
+      filteredTask.dependencyTasks.includes(t.id)
+    );
+  });
+};
+
+export const makeSelectBlockedTasksIds = (task: Task | undefined) => {
+  return createAppSelector([selectAllTasks, (state) => task], (tasks, t) => {
+    if (t === undefined) {
+      return [];
+    }
+    return tasks
+      .filter((filteredTask) => filteredTask.dependencyTasks.includes(t.id))
+      .map((mappedTask) => mappedTask.id);
+  });
+};
+
+export const makeSelectChildTasks = (task: Task) => {
+  return createAppSelector([selectAllTasks, (state) => task], (tasks, t) =>
+    t.childTasks
+      .map((tID) => tasks.find((searchedTask) => searchedTask.id === tID))
+      .filter((e) => e !== undefined)
+  );
+};
+
+export const makeSelectTaskById = (taskId: string | null | undefined) => {
+  return createAppSelector(
+    [selectAllTasks, (state) => taskId],
+    (tasks, tId) => {
+      if (!taskId) {
+        return undefined;
+      }
+
+      return tasks.find((t) => t.id === tId);
+    }
+  );
+};
+
+export const makeSelectTasksByIds = (tasksIds: string[]) => {
+  return createAppSelector(
+    [selectAllTasks, (state) => tasksIds],
+    (tasks, tIds) => tasks.filter((t) => tIds.includes(t.id))
+  );
+};
 
 export default tasksSlice.reducer;

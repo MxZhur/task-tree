@@ -10,7 +10,6 @@ import {
   faCheck,
   faEdit,
   faHandPointLeft,
-  faShare,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import PriorityIndicator from "./PriorityIndicator";
@@ -18,7 +17,7 @@ import DifficultyIndicator from "./DifficultyIndicator";
 import DependencyTasksList from "./DependencyTasksList";
 import { Link } from "react-router-dom";
 import { ask } from "@tauri-apps/api/dialog";
-import { deleteTask } from "../../store/tasksSlice";
+import { deleteTask, makeSelectBlockedTasks, makeSelectDependencyTasks, selectSelectedTask } from "../../store/tasksSlice";
 import { setIsDirty } from "../../store/currentFileSlice";
 import { setSelectedTask } from "../../store/selectedTaskSlice";
 import { useTranslation } from "react-i18next";
@@ -28,24 +27,25 @@ const TaskDetailsView: React.FC = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
-  const task = useAppSelector((state) =>
-    state.tasks.list.find((t) => t.id === state.selectedTask.taskId)
-  );
+  const task = useAppSelector(selectSelectedTask);
 
-  const dependencyTasks = useAppSelector((state) => {
-    if (task === undefined) {
-      return [];
-    }
-    return state.tasks.list.filter((t) => task.dependencyTasks.includes(t.id));
-  });
+  const dependencyTasks = useAppSelector(makeSelectDependencyTasks(task));
+  const blockedTasks = useAppSelector(makeSelectBlockedTasks(task));
 
-  const blockedTasks = useAppSelector((state) => {
-    if (task === undefined) {
-      return [];
-    }
+  // const dependencyTasks = useAppSelector((state) => {
+  //   if (task === undefined) {
+  //     return [];
+  //   }
+  //   return state.tasks.list.filter((t) => task.dependencyTasks.includes(t.id));
+  // });
 
-    return state.tasks.list.filter((t) => t.dependencyTasks.includes(task.id));
-  });
+  // const blockedTasks = useAppSelector((state) => {
+  //   if (task === undefined) {
+  //     return [];
+  //   }
+
+  //   return state.tasks.list.filter((t) => t.dependencyTasks.includes(task.id));
+  // });
 
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
 

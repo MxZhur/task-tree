@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { RootState } from ".";
 
 type SelectedTaskState = {
   taskId: string | null;
@@ -9,7 +10,7 @@ const initialState: SelectedTaskState = {
 };
 
 const selectedTaskSlice = createSlice({
-  name: "tasks",
+  name: "selectedTask",
   initialState,
   reducers: {
     setSelectedTask(state, action: PayloadAction<string | null>) {
@@ -21,5 +22,7 @@ const selectedTaskSlice = createSlice({
 });
 
 export const { setSelectedTask } = selectedTaskSlice.actions;
+
+export const selectSelectedTaskId = (state: RootState) => state.selectedTask.taskId;
 
 export default selectedTaskSlice.reducer;

@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { RootState } from ".";
 
 type CurrentFileState = {
   filePath: string | null;
@@ -13,7 +14,7 @@ const initialState: CurrentFileState = {
 };
 
 const currentFileSlice = createSlice({
-  name: "tasks",
+  name: "currentFile",
   initialState,
   reducers: {
     setFilePath(state, action: PayloadAction<string | null>) {
@@ -35,5 +36,7 @@ const currentFileSlice = createSlice({
 });
 
 export const { setFilePath, setIsDirty, setIsNewFile } = currentFileSlice.actions;
+
+export const selectCurrentFileInfo = (state: RootState) => state.currentFile;
 
 export default currentFileSlice.reducer;

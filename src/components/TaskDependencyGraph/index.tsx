@@ -3,8 +3,8 @@ import { useAppSelector } from "../../store/hooks";
 import Graph from "react-graph-vis";
 import "./index.css";
 import { nanoid } from "@reduxjs/toolkit";
-import { Task } from "../../store/tasksSlice";
-// import { setSelectedTask } from "../../store/selectedTaskSlice";
+import { Task, makeSelectNeighborTasks, selectSelectedTask } from "../../store/tasksSlice";
+import { selectSelectedTaskId } from "../../store/selectedTaskSlice";
 
 const getGraphData = (tasks: Task[], selectedTask: string | null = null) => {
   const taskIndexes: Record<string, number> = {};
@@ -43,36 +43,33 @@ const getGraphData = (tasks: Task[], selectedTask: string | null = null) => {
 };
 
 const TaskDependencyGraph: React.FC = () => {
-  const selectedTaskId = useAppSelector((state) => state.selectedTask.taskId);
+  const selectedTaskId = useAppSelector(selectSelectedTaskId);
+  const selectedTask = useAppSelector(selectSelectedTask);
 
-  const tasks = useAppSelector((state) => {
-    const selectedTask = state.tasks.list.find(
-      (t) => t.id === state.selectedTask.taskId
-    );
+  const tasks = useAppSelector(makeSelectNeighborTasks(selectedTask));
 
-    if (selectedTask === undefined) {
-      return [];
-    }
+  let defaultGraphData;
 
-    if (selectedTask.parentTaskId === null) {
-      return state.tasks.list.filter((t) =>
-        state.tasks.topLevelIDs.includes(t.id)
-      );
-    } else {
-      return state.tasks.list.filter(
-        (t) => t.parentTaskId === selectedTask.parentTaskId
-      );
-    }
-  });
+  if (selectedTask === undefined) {
+    defaultGraphData = {nodes: [], edges: []};
+  } else {
+    defaultGraphData = getGraphData(tasks, selectedTask.id);
+  }
 
   const [graphData, setGraphData] = useState(
-    getGraphData(tasks, selectedTaskId)
+    defaultGraphData
   );
 
   const [graphKey, setGraphKey] = useState(nanoid());
 
   useEffect(() => {
-    setGraphData(getGraphData(tasks, selectedTaskId));
+    let newGraphData;
+    if (selectedTask === undefined) {
+      newGraphData = {nodes: [], edges: []};
+    } else {
+      newGraphData = getGraphData(tasks, selectedTask.id);
+    }
+    setGraphData(newGraphData);
     setGraphKey(nanoid());
   }, [selectedTaskId]);
 

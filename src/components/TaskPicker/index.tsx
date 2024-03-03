@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClose, faEdit } from "@fortawesome/free-solid-svg-icons";
 import { TaskPickerItem } from "./TaskPickerItem";
 import { useTranslation } from "react-i18next";
-import { Task, makeSelectTaskById, selectAllTasks, selectAllTopLevelTasks, selectTopLevelIDs } from "../../store/tasksSlice";
+import { Task, makeSelectTaskById, selectAllTasks, selectTopLevelIDs } from "../../store/tasksSlice";
 
 interface TaskPickerProps {
   taskId: string | null;

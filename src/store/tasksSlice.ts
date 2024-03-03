@@ -421,7 +421,7 @@ export const selectSelectedTask = createAppSelector(
 
 export const makeSelectNeighborTasks = (task: Task | undefined) => {
   return createAppSelector(
-    [selectAllTasks, selectTopLevelIDs, (state) => task],
+    [selectAllTasks, selectTopLevelIDs, (_) => task],
     (tasks, topLevelIDs, t) => {
       if (t === undefined) {
         return [];
@@ -441,7 +441,7 @@ export const makeSelectNeighborTasks = (task: Task | undefined) => {
 };
 
 export const makeSelectDependencyTasks = (task: Task | undefined) => {
-  return createAppSelector([selectAllTasks, (state) => task], (tasks, t) => {
+  return createAppSelector([selectAllTasks, (_) => task], (tasks, t) => {
     if (t === undefined) {
       return [];
     }
@@ -452,7 +452,7 @@ export const makeSelectDependencyTasks = (task: Task | undefined) => {
 };
 
 export const makeSelectBlockedTasks = (task: Task | undefined) => {
-  return createAppSelector([selectAllTasks, (state) => task], (tasks, t) => {
+  return createAppSelector([selectAllTasks, (_) => task], (tasks, t) => {
     if (t === undefined) {
       return [];
     }
@@ -463,7 +463,7 @@ export const makeSelectBlockedTasks = (task: Task | undefined) => {
 };
 
 export const makeSelectBlockedTasksIds = (task: Task | undefined) => {
-  return createAppSelector([selectAllTasks, (state) => task], (tasks, t) => {
+  return createAppSelector([selectAllTasks, (_) => task], (tasks, t) => {
     if (t === undefined) {
       return [];
     }
@@ -474,7 +474,7 @@ export const makeSelectBlockedTasksIds = (task: Task | undefined) => {
 };
 
 export const makeSelectChildTasks = (task: Task) => {
-  return createAppSelector([selectAllTasks, (state) => task], (tasks, t) =>
+  return createAppSelector([selectAllTasks, (_) => task], (tasks, t) =>
     t.childTasks
       .map((tID) => tasks.find((searchedTask) => searchedTask.id === tID))
       .filter((e) => e !== undefined)
@@ -483,7 +483,7 @@ export const makeSelectChildTasks = (task: Task) => {
 
 export const makeSelectTaskById = (taskId: string | null | undefined) => {
   return createAppSelector(
-    [selectAllTasks, (state) => taskId],
+    [selectAllTasks, (_) => taskId],
     (tasks, tId) => {
       if (!taskId) {
         return undefined;
@@ -496,7 +496,7 @@ export const makeSelectTaskById = (taskId: string | null | undefined) => {
 
 export const makeSelectTasksByIds = (tasksIds: string[]) => {
   return createAppSelector(
-    [selectAllTasks, (state) => tasksIds],
+    [selectAllTasks, (_) => tasksIds],
     (tasks, tIds) => tasks.filter((t) => tIds.includes(t.id))
   );
 };

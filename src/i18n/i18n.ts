@@ -29,6 +29,7 @@ i18n
           cancel: "Cancel",
           selectTask: "Select Task",
           change: "Change",
+          back: 'Back',
           welcomePage: {
             newFile: "New File",
             openFile: "Open File...",
@@ -111,6 +112,7 @@ i18n
           cancel: "Отмена",
           selectTask: "Выбрать задачу",
           change: "Изменить",
+          back: 'Назад',
           welcomePage: {
             newFile: "Новый проект",
             openFile: "Открыть проект...",

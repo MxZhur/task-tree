@@ -58,8 +58,8 @@ const AboutPage: React.FC = () => {
               {t("aboutPage.githubPage")}
             </a>
           </div>
-          <div>
-            <Button onClick={goBack}>Back</Button>
+          <div className="mt-4">
+            <Button onClick={goBack}>{t('back')}</Button>
           </div>
         </div>
       </div>

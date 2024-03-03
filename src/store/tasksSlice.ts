@@ -250,17 +250,17 @@ const tasksSlice = createSlice({
               );
             }
           }
+        }
+      } else {
+        if (payload.beforeTaskId === null) {
+          state.topLevelIDs.push(updatedTask.id);
         } else {
-          if (payload.beforeTaskId === null) {
-            state.topLevelIDs.push(updatedTask.id);
-          } else {
-            const beforeTaskIndex = state.topLevelIDs.findIndex(
-              (el) => el === payload.beforeTaskId
-            );
+          const beforeTaskIndex = state.topLevelIDs.findIndex(
+            (el) => el === payload.beforeTaskId
+          );
 
-            if (beforeTaskIndex !== -1) {
-              state.topLevelIDs.splice(beforeTaskIndex, 0, updatedTask.id);
-            }
+          if (beforeTaskIndex !== -1) {
+            state.topLevelIDs.splice(beforeTaskIndex, 0, updatedTask.id);
           }
         }
       }

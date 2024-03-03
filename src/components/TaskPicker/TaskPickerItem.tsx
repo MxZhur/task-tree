@@ -33,7 +33,7 @@ const TaskPickerItem: React.FC<TaskPickerItemProps> = ({
     <>
       <div
         className="unselectable"
-        style={{ overflow: "hidden", textOverflow: "ellipsis" }}
+        style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: 'nowrap' }}
       >
         {disabledTasksIds !== undefined &&
         disabledTasksIds.includes(task.id) ? (

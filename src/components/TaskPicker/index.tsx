@@ -74,6 +74,7 @@ const TaskPicker: React.FC<TaskPickerProps> = ({
           textOverflow: "ellipsis",
           display: "flex",
           flexDirection: "row",
+          whiteSpace: 'nowrap',
         }}
       >
         <Button size="sm" title={t('change')} onClick={handleShowModal}>

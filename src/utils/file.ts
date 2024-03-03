@@ -10,6 +10,7 @@ import { changeWindowTitle } from "./window";
 import { loadTasks } from "../store/tasksSlice";
 import { pushNewRecentFile } from "../store/recentFilesSlice";
 import { APP_NAME } from "./appInfo";
+import { setSelectedTask } from "../store/selectedTaskSlice";
 
 const FILE_EXTENSION = "ttproj";
 
@@ -70,6 +71,7 @@ export const readFile = async (filePath: string) => {
   const fileContent = await readTextFile(filePath);
 
   store.dispatch(loadTasks(fileContent));
+  store.dispatch(setSelectedTask(null));
   store.dispatch(setIsNewFile(false));
   store.dispatch(setIsDirty(false));
   store.dispatch(setFilePath(filePath));

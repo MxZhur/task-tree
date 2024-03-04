@@ -4,7 +4,6 @@ import { AppLogo } from "../../components";
 import { useNavigate } from "react-router-dom";
 import { APP_AUTHOR, APP_RELEASE_YEAR, APP_VERSION } from "../../utils/appInfo";
 import { useTranslation } from "react-i18next";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const AboutPage: React.FC = () => {
   const { t } = useTranslation();

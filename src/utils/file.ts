@@ -12,7 +12,7 @@ import { pushNewRecentFile } from "../store/recentFilesSlice";
 import { APP_NAME } from "./appInfo";
 import { setSelectedTask } from "../store/selectedTaskSlice";
 
-const FILE_EXTENSION = "ttproj";
+export const FILE_EXTENSION = "ttproj";
 
 export const saveFileTo = async (filePath: string) => {
   const fileContent = JSON.stringify(store.getState().tasks);
@@ -76,5 +76,25 @@ export const readFile = async (filePath: string) => {
   store.dispatch(setIsDirty(false));
   store.dispatch(setFilePath(filePath));
   store.dispatch(pushNewRecentFile(filePath));
-  changeWindowTitle(APP_NAME + " - " + filePath);
+  changeWindowTitle(APP_NAME + " - " + getFileBaseName(filePath));
 };
+
+export const getFileBaseName = (filePath: string|null) => {
+  if (filePath === null) {
+    return '';
+  }
+
+  let fileBaseName = filePath.split('\\').pop();
+
+  if (fileBaseName !== undefined) {
+    return fileBaseName;
+  }
+
+  fileBaseName = filePath.split('/').pop();
+
+  if (fileBaseName !== undefined) {
+    return fileBaseName;
+  }
+
+  return '';
+}

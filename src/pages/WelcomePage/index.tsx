@@ -8,7 +8,7 @@ import {
   faFolderOpen,
   faRemove,
 } from "@fortawesome/free-solid-svg-icons";
-import { openFile, readFile } from "../../utils/file";
+import { getFileBaseName, openFile, readFile } from "../../utils/file";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { clearTasks } from "../../store/tasksSlice";
 import {
@@ -115,7 +115,7 @@ const WelcomePage: React.FC = () => {
                     key={fp}
                     onClick={() => onRecentFileClick(fp)}
                   >
-                    {fp}
+                    {getFileBaseName(fp)}
                   </li>
                 ))}
               </ul>

@@ -2,7 +2,7 @@ import React from "react";
 import { Nav, Button } from "react-bootstrap";
 import "./MenuBar.css";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
-import { openFile, saveFileAs, saveFileTo } from "../../utils/file";
+import { getFileBaseName, openFile, saveFileAs, saveFileTo } from "../../utils/file";
 import { clearTasks } from "../../store/tasksSlice";
 import {
   selectCurrentFileInfo,
@@ -23,6 +23,7 @@ import {
 import { Link } from "react-router-dom";
 import { APP_NAME } from "../../utils/appInfo";
 import { useTranslation } from "react-i18next";
+import { setSelectedTask } from "../../store/selectedTaskSlice";
 
 const MenuBar: React.FC = () => {
   const { t } = useTranslation();
@@ -52,6 +53,7 @@ const MenuBar: React.FC = () => {
     }
 
     dispatch(clearTasks());
+    dispatch(setSelectedTask(null));
     dispatch(setIsNewFile(true));
     dispatch(setIsDirty(false));
     dispatch(setFilePath(null));
@@ -72,7 +74,7 @@ const MenuBar: React.FC = () => {
         return null;
       }
 
-      changeWindowTitle(APP_NAME + " - " + fileDialogResult);
+      changeWindowTitle(APP_NAME + " - " + getFileBaseName(fileDialogResult));
 
       return fileDialogResult;
     } else {
@@ -82,7 +84,7 @@ const MenuBar: React.FC = () => {
         await saveFileTo(filePath);
       }
 
-      changeWindowTitle(APP_NAME + " - " + filePath);
+      changeWindowTitle(APP_NAME + " - " + getFileBaseName(filePath));
 
       return filePath;
     }

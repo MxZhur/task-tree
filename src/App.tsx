@@ -4,7 +4,7 @@ import { AboutPage, MainPage, TaskForm, WelcomePage } from "./pages";
 import Layout from "./components/Layout";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
-import { readFile } from "./utils/file";
+import { FILE_EXTENSION, readFile } from "./utils/file";
 import { listen } from "@tauri-apps/api/event";
 
 function App() {
@@ -54,6 +54,13 @@ function App() {
 
   listen<string[]>("tauri://file-drop", async (event) => {
     const filePath: string = event.payload[0];
+
+    const fileExtension = filePath.slice(filePath.lastIndexOf("."));
+
+    if (fileExtension !== '.' + FILE_EXTENSION) {
+      return;
+    }
+
     await readFile(filePath);
     navigate('/home');
   });

@@ -85,8 +85,9 @@ function App() {
           return;
         }
 
-        await readFile(filePath);
-        navigate("/home");
+        if (await readFile(filePath)) {
+          navigate("/home");
+        }
       }
     );
 

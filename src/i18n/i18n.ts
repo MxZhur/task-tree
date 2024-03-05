@@ -30,6 +30,8 @@ i18n
           selectTask: "Select Task",
           change: "Change",
           back: "Back",
+          unableToOpenFile: 'Unable to open the file',
+          error: 'Error',
           welcomePage: {
             newFile: "New File",
             openFile: "Open File...",
@@ -119,6 +121,8 @@ i18n
           selectTask: "Выбрать задачу",
           change: "Изменить",
           back: "Назад",
+          unableToOpenFile: 'Не удалось открыть файл',
+          error: 'Ошибка',
           welcomePage: {
             newFile: "Новый проект",
             openFile: "Открыть проект...",

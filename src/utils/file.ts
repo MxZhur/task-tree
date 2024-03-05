@@ -1,4 +1,4 @@
-import { open, save } from "@tauri-apps/api/dialog";
+import { message, open, save } from "@tauri-apps/api/dialog";
 import store from "../store";
 import { readTextFile, writeTextFile } from "@tauri-apps/api/fs";
 import {
@@ -11,6 +11,7 @@ import { loadTasks } from "../store/tasksSlice";
 import { pushNewRecentFile } from "../store/recentFilesSlice";
 import { APP_NAME } from "./appInfo";
 import { setSelectedTask } from "../store/selectedTaskSlice";
+import i18n from "../i18n/i18n";
 
 export const FILE_EXTENSION = "ttproj";
 
@@ -62,39 +63,52 @@ export const openFile = async () => {
     filePath = filePath[0];
   }
 
-  await readFile(filePath);
+  if (!(await readFile(filePath))) {
+    return null;
+  }
 
   return filePath;
 };
 
 export const readFile = async (filePath: string) => {
-  const fileContent = await readTextFile(filePath);
+  try {
+    const fileContent = await readTextFile(filePath);
 
-  store.dispatch(loadTasks(fileContent));
-  store.dispatch(setSelectedTask(null));
-  store.dispatch(setIsNewFile(false));
-  store.dispatch(setIsDirty(false));
-  store.dispatch(setFilePath(filePath));
-  store.dispatch(pushNewRecentFile(filePath));
-  changeWindowTitle(APP_NAME + " - " + getFileBaseName(filePath));
+    store.dispatch(loadTasks(fileContent));
+    store.dispatch(setSelectedTask(null));
+    store.dispatch(setIsNewFile(false));
+    store.dispatch(setIsDirty(false));
+    store.dispatch(setFilePath(filePath));
+    store.dispatch(pushNewRecentFile(filePath));
+    changeWindowTitle(APP_NAME + " - " + getFileBaseName(filePath));
+
+    return true;
+  } catch {
+    message(i18n.t("unableToOpenFile") + ' "' + filePath + '"', {
+      title: i18n.t("error"),
+      type: "error",
+    });
+
+    return false;
+  }
 };
 
-export const getFileBaseName = (filePath: string|null) => {
+export const getFileBaseName = (filePath: string | null) => {
   if (filePath === null) {
-    return '';
+    return "";
   }
 
-  let fileBaseName = filePath.split('\\').pop();
+  let fileBaseName = filePath.split("\\").pop();
 
   if (fileBaseName !== undefined) {
     return fileBaseName;
   }
 
-  fileBaseName = filePath.split('/').pop();
+  fileBaseName = filePath.split("/").pop();
 
   if (fileBaseName !== undefined) {
     return fileBaseName;
   }
 
-  return '';
-}
+  return "";
+};

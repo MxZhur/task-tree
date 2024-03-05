@@ -50,9 +50,9 @@ const WelcomePage: React.FC = () => {
   };
 
   const onRecentFileClick = async (filePath: string) => {
-    await readFile(filePath);
-
-    navigate("/home");
+    if (await readFile(filePath)) {
+      navigate("/home");
+    }
   };
 
   return (

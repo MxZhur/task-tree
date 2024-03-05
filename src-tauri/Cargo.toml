@@ -1,6 +1,6 @@
 [package]
 name = "task-tree"
-version = "0.0.1"
+version = "0.0.2"
 description = "The advanced task manager app."
 authors = ["Maxim Zhuravlev"]
 edition = "2021"

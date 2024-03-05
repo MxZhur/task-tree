@@ -69,7 +69,9 @@ const TaskForm: React.FC = () => {
     }
   });
 
-  const defaultBlockedTasksIds = useAppSelector(makeSelectBlockedTasksIds(task));
+  const defaultBlockedTasksIds = useAppSelector(
+    makeSelectBlockedTasksIds(task)
+  );
 
   const [name, setName] = useState<string>(task ? task.name : "");
   const [description, setDescription] = useState<string | undefined>(
@@ -202,10 +204,27 @@ const TaskForm: React.FC = () => {
 
   return (
     <Container>
-      <div>
-        <h5>{taskId ? t("editTask") : t("newTask")}</h5>
-      </div>
       <Form onSubmit={handleSubmit}>
+        {/* Header */}
+        <div
+        className="mb-3"
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <h5>{taskId ? t("editTask") : t("newTask")}</h5>
+          <div>
+            <Button size="sm" variant="success" type="submit">
+              {t("taskFormFields.btnSubmit")}
+            </Button>
+            &nbsp;
+            <Button size="sm" onClick={goBack}>{t("cancel")}</Button>
+          </div>
+        </div>
+
         {/* Name */}
         <Form.Group className="mb-3">
           <Form.Control

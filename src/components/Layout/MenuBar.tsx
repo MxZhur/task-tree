@@ -15,6 +15,7 @@ import { ask } from "@tauri-apps/api/dialog";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCircleInfo,
+  faCog,
   faFile,
   faFloppyDisk,
   faFolderOpen,
@@ -135,13 +136,13 @@ const MenuBar: React.FC = () => {
           <FontAwesomeIcon icon={faSdCard} />
         </Button>
       </Nav.Item>
-      {/* <Nav.Item>
+      <Nav.Item>
         <Link to={"/settings"}>
           <Button title={t("settings")} variant="link">
             <FontAwesomeIcon icon={faCog} />
           </Button>
         </Link>
-      </Nav.Item> */}
+      </Nav.Item>
       <Nav.Item>
         <Link to={"/about"}>
           <Button title={t("about")} variant="link">

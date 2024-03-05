@@ -1,6 +1,12 @@
 import { Route, Routes, useNavigate } from "react-router-dom";
 import "./App.css";
-import { AboutPage, MainPage, TaskForm, WelcomePage } from "./pages";
+import {
+  AboutPage,
+  MainPage,
+  TaskForm,
+  WelcomePage,
+  SettingsPage,
+} from "./pages";
 import Layout from "./components/Layout";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
@@ -100,6 +106,7 @@ function App() {
         <Route path="edit/:taskId" element={<TaskForm />} />
       </Route>
       <Route path="/about" element={<AboutPage />} />
+      <Route path="/settings" element={<SettingsPage />} />
     </Routes>
   );
 }

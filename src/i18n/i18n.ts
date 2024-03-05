@@ -29,7 +29,7 @@ i18n
           cancel: "Cancel",
           selectTask: "Select Task",
           change: "Change",
-          back: 'Back',
+          back: "Back",
           welcomePage: {
             newFile: "New File",
             openFile: "Open File...",
@@ -91,10 +91,13 @@ i18n
             saveChanges:
               "Your project has unsaved changes. Do you want to save them?",
           },
+          settingsPage: {
+            descriptionExpandedByDefault: "Expand description by default",
+          },
           aboutPage: {
-            version: 'Version',
-            madeWith: 'Made with',
-            githubPage: 'GitHub page',
+            version: "Version",
+            madeWith: "Made with",
+            githubPage: "GitHub page",
           },
         },
       },
@@ -115,7 +118,7 @@ i18n
           cancel: "Отмена",
           selectTask: "Выбрать задачу",
           change: "Изменить",
-          back: 'Назад',
+          back: "Назад",
           welcomePage: {
             newFile: "Новый проект",
             openFile: "Открыть проект...",
@@ -177,10 +180,13 @@ i18n
             saveChanges:
               "В проекте есть несохранённые изменения. Хотите ли вы их сохранить?",
           },
+          settingsPage: {
+            descriptionExpandedByDefault: "Раскрывать описание по умолчанию",
+          },
           aboutPage: {
-            version: 'Версия',
-            madeWith: 'Сделано с помощью',
-            githubPage: 'Страница на GitHub',
+            version: "Версия",
+            madeWith: "Сделано с помощью",
+            githubPage: "Страница на GitHub",
           },
         },
       },

@@ -14,12 +14,14 @@ import tasksReducer from "./tasksSlice";
 import selectedTaskReducer from "./selectedTaskSlice";
 import currentFileReducer from "./currentFileSlice";
 import recentFilesReducer from "./recentFilesSlice";
+import settingsReducer from "./settingsSlice";
 
 const rootReducer = combineReducers({
   tasks: tasksReducer,
   selectedTask: selectedTaskReducer,
   currentFile: currentFileReducer,
   recentFiles: recentFilesReducer,
+  settings: settingsReducer,
 });
 
 const persistConfig = {

@@ -17,11 +17,17 @@ import DifficultyIndicator from "./DifficultyIndicator";
 import DependencyTasksList from "./DependencyTasksList";
 import { Link } from "react-router-dom";
 import { ask } from "@tauri-apps/api/dialog";
-import { deleteTask, makeSelectBlockedTasks, makeSelectDependencyTasks, selectSelectedTask } from "../../store/tasksSlice";
+import {
+  deleteTask,
+  makeSelectBlockedTasks,
+  makeSelectDependencyTasks,
+  selectSelectedTask,
+} from "../../store/tasksSlice";
 import { setIsDirty } from "../../store/currentFileSlice";
 import { setSelectedTask } from "../../store/selectedTaskSlice";
 import { useTranslation } from "react-i18next";
 import MDEditor from "@uiw/react-md-editor";
+import { selectSettings } from "../../store/settingsSlice";
 
 const TaskDetailsView: React.FC = () => {
   const { t } = useTranslation();
@@ -32,22 +38,11 @@ const TaskDetailsView: React.FC = () => {
   const dependencyTasks = useAppSelector(makeSelectDependencyTasks(task));
   const blockedTasks = useAppSelector(makeSelectBlockedTasks(task));
 
-  // const dependencyTasks = useAppSelector((state) => {
-  //   if (task === undefined) {
-  //     return [];
-  //   }
-  //   return state.tasks.list.filter((t) => task.dependencyTasks.includes(t.id));
-  // });
+  const { descriptionExpandedByDefault } = useAppSelector(selectSettings);
 
-  // const blockedTasks = useAppSelector((state) => {
-  //   if (task === undefined) {
-  //     return [];
-  //   }
-
-  //   return state.tasks.list.filter((t) => t.dependencyTasks.includes(task.id));
-  // });
-
-  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(
+    descriptionExpandedByDefault
+  );
 
   const onDeleteButtonClick = async () => {
     const deletionConfirmed = await ask(

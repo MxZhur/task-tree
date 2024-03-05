@@ -37,7 +37,7 @@ const AboutPage: React.FC = () => {
             alignItems: "center",
           }}
         >
-          <div>Version {APP_VERSION}</div>
+          <div>{t('about.version')} {APP_VERSION}</div>
           <div>
             {APP_RELEASE_YEAR} &#169; {APP_AUTHOR}
           </div>

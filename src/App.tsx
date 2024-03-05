@@ -4,66 +4,91 @@ import { AboutPage, MainPage, TaskForm, WelcomePage } from "./pages";
 import Layout from "./components/Layout";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
-import { FILE_EXTENSION, readFile } from "./utils/file";
+import { FILE_EXTENSION, readFile, saveFileAs, saveFileTo } from "./utils/file";
 import { listen } from "@tauri-apps/api/event";
+import store from "./store";
+import { ask } from "@tauri-apps/api/dialog";
+import { appWindow } from "@tauri-apps/api/window";
+import { useEffect } from "react";
+import i18n from "./i18n/i18n";
+
+const listenToCloseRequest = async () => {
+  return appWindow.onCloseRequested(async (event) => {
+    const fileIsDirty = store.getState().currentFile.isDirty;
+
+    // If the file is "dirty", ask for confirmation
+
+    if (!fileIsDirty) {
+      return;
+    }
+
+    const confirmed = await ask(i18n.t("exitConfirmation.youSure"), {
+      title: i18n.t("exitConfirmation.titleYouSure"),
+      type: "warning",
+    });
+    if (!confirmed) {
+      event.preventDefault();
+      return;
+    }
+
+    const fileSaveConfirmed = await ask(
+      i18n.t("exitConfirmation.saveChanges"),
+      {
+        title: i18n.t("titleSaveChanges"),
+        type: "warning",
+      }
+    );
+
+    if (fileSaveConfirmed) {
+      // Also check if that's not a new file
+
+      const isNewFile = store.getState().currentFile.isNewFile;
+
+      if (isNewFile) {
+        const fileDialogResult = await saveFileAs();
+
+        if (fileDialogResult === null) {
+          event.preventDefault();
+          return;
+        }
+      } else {
+        const filePath = store.getState().currentFile.filePath;
+
+        if (filePath !== null) {
+          await saveFileTo(filePath);
+        }
+      }
+    }
+  });
+};
 
 function App() {
   const navigate = useNavigate();
 
-  // TODO: Fix the close request handler
+  useEffect(() => {
+    const unlistenCloseRequest = listenToCloseRequest();
 
-  // const { t } = useTranslation();
-  // const unlistenCloseRequest = appWindow.onCloseRequested(async (event) => {
-  //   const fileIsDirty = store.getState().currentFile.isDirty;
+    const unlistenFileDrop = listen<string[]>(
+      "tauri://file-drop",
+      async (event) => {
+        const filePath: string = event.payload[0];
 
-  //   // If the file is "dirty", ask for confirmation
+        const fileExtension = filePath.slice(filePath.lastIndexOf("."));
 
-  //   if (!fileIsDirty) {
-  //     return;
-  //   }
+        if (fileExtension !== "." + FILE_EXTENSION) {
+          return;
+        }
 
-  //   const confirmed = await ask(t("exitConfirmation.youSure"));
-  //   if (!confirmed) {
-  //     event.preventDefault();
-  //     return;
-  //   }
+        await readFile(filePath);
+        navigate("/home");
+      }
+    );
 
-  //   const fileSaveConfirmed = await ask(t("exitConfirmation.saveChanges"));
-
-  //   if (fileSaveConfirmed) {
-  //     // Also check if that's not a new file
-
-  //     const isNewFile = store.getState().currentFile.isNewFile;
-
-  //     if (isNewFile) {
-  //       const fileDialogResult = await saveFileAs();
-
-  //       if (fileDialogResult === null) {
-  //         event.preventDefault();
-  //         return;
-  //       }
-  //     } else {
-  //       const filePath = store.getState().currentFile.filePath;
-
-  //       if (filePath !== null) {
-  //         await saveFileTo(filePath);
-  //       }
-  //     }
-  //   }
-  // });
-
-  listen<string[]>("tauri://file-drop", async (event) => {
-    const filePath: string = event.payload[0];
-
-    const fileExtension = filePath.slice(filePath.lastIndexOf("."));
-
-    if (fileExtension !== '.' + FILE_EXTENSION) {
-      return;
-    }
-
-    await readFile(filePath);
-    navigate('/home');
-  });
+    return () => {
+      unlistenCloseRequest.then((f) => f());
+      unlistenFileDrop.then((f) => f());
+    };
+  }, []);
 
   return (
     <Routes>

@@ -85,11 +85,14 @@ i18n
             easy: "Easy",
           },
           exitConfirmation: {
+            titleYouSure: "Exit",
             youSure: "Are you sure?",
+            titleSaveChanges: "Save changes?",
             saveChanges:
               "Your project has unsaved changes. Do you want to save them?",
           },
           aboutPage: {
+            version: 'Version',
             madeWith: 'Made with',
             githubPage: 'GitHub page',
           },
@@ -168,11 +171,14 @@ i18n
             easy: "Лёгкая",
           },
           exitConfirmation: {
+            titleYouSure: "Выход",
             youSure: "Вы уверены?",
+            titleSaveChanges: "Сохранить изменения?",
             saveChanges:
               "В проекте есть несохранённые изменения. Хотите ли вы их сохранить?",
           },
           aboutPage: {
+            version: 'Версия',
             madeWith: 'Сделано с помощью',
             githubPage: 'Страница на GitHub',
           },

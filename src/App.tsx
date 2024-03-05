@@ -40,7 +40,7 @@ const listenToCloseRequest = async () => {
     const fileSaveConfirmed = await ask(
       i18n.t("exitConfirmation.saveChanges"),
       {
-        title: i18n.t("titleSaveChanges"),
+        title: i18n.t("exitConfirmation.titleSaveChanges"),
         type: "warning",
       }
     );

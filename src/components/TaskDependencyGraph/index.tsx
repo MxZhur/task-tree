@@ -3,7 +3,12 @@ import { useAppSelector } from "../../store/hooks";
 import Graph from "react-graph-vis";
 import "./index.css";
 import { nanoid } from "@reduxjs/toolkit";
-import { Task, makeSelectNeighborTasks, selectSelectedTask } from "../../store/tasksSlice";
+import {
+  TASK_DIFFICULTIES,
+  Task,
+  makeSelectNeighborTasks,
+  selectSelectedTask,
+} from "../../store/tasksSlice";
 import { selectSelectedTaskId } from "../../store/selectedTaskSlice";
 
 const getGraphData = (tasks: Task[], selectedTask: string | null = null) => {
@@ -15,17 +20,40 @@ const getGraphData = (tasks: Task[], selectedTask: string | null = null) => {
     taskIndexes[t.id] = index + 1;
   }
 
-  const nodes = tasks.map((t) => ({
-    id: taskIndexes[t.id],
-    label: t.name,
-    value: t.id,
-    color: {
-      background: t.id === selectedTask ? "#fff2a6" : "skyblue",
-    },
-    widthConstraint: {
-      maximum: 100,
-    },
-  }));
+  const nodes = tasks.map((t) => {
+    let nodeColor = "skyblue";
+
+    switch (t.difficulty) {
+      case TASK_DIFFICULTIES.hard:
+        nodeColor = "#ffbfb3";
+        break;
+
+      case TASK_DIFFICULTIES.normal:
+        nodeColor = "#ccfcda";
+        break;
+
+      case TASK_DIFFICULTIES.easy:
+        nodeColor = "#ccf0fc";
+        break;
+
+      default:
+        break;
+    }
+
+    return {
+      id: taskIndexes[t.id],
+      label: t.name,
+      value: t.id,
+      borderWidth: t.id === selectedTask ? 2 : 1,
+      color: {
+        background: nodeColor,
+        border: t.id === selectedTask ? "red" : "#2b7ce9",
+      },
+      widthConstraint: {
+        maximum: 100,
+      },
+    };
+  });
 
   let edges = [];
 
@@ -51,21 +79,19 @@ const TaskDependencyGraph: React.FC = () => {
   let defaultGraphData;
 
   if (selectedTask === undefined) {
-    defaultGraphData = {nodes: [], edges: []};
+    defaultGraphData = { nodes: [], edges: [] };
   } else {
     defaultGraphData = getGraphData(tasks, selectedTask.id);
   }
 
-  const [graphData, setGraphData] = useState(
-    defaultGraphData
-  );
+  const [graphData, setGraphData] = useState(defaultGraphData);
 
   const [graphKey, setGraphKey] = useState(nanoid());
 
   useEffect(() => {
     let newGraphData;
     if (selectedTask === undefined) {
-      newGraphData = {nodes: [], edges: []};
+      newGraphData = { nodes: [], edges: [] };
     } else {
       newGraphData = getGraphData(tasks, selectedTask.id);
     }
@@ -73,7 +99,6 @@ const TaskDependencyGraph: React.FC = () => {
     setGraphKey(nanoid());
   }, [selectedTaskId]);
 
-  
   // const handleDoubleClick = (event) => {
   //   const taskIds = tasks.map((t) => t.id);
   //   if (event.nodes.length === 0) {
@@ -94,9 +119,11 @@ const TaskDependencyGraph: React.FC = () => {
             arrows: "to",
           },
         }}
-        events={{
-          // doubleClick: handleDoubleClick,
-        }}
+        events={
+          {
+            // doubleClick: handleDoubleClick,
+          }
+        }
       />
     </div>
   );

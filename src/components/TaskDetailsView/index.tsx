@@ -22,6 +22,7 @@ import {
   makeSelectBlockedTasks,
   makeSelectDependencyTasks,
   selectSelectedTask,
+  updateProgress,
 } from "../../store/tasksSlice";
 import { setIsDirty } from "../../store/currentFileSlice";
 import { setSelectedTask } from "../../store/selectedTaskSlice";
@@ -119,12 +120,38 @@ const TaskDetailsView: React.FC = () => {
 
       {/* Progress */}
       {task.progress! < 100 ? (
-        <ProgressBar
-          min={0}
-          max={100}
-          now={task!.progress!}
-          label={task!.progress! + "%"}
-        />
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Button
+            size="sm"
+            variant="success"
+            title={t("taskFormFields.btnMarkAsDone")}
+            onClick={() =>
+              dispatch(
+                updateProgress({
+                  id: task.id,
+                  progress: 100,
+                })
+              )
+            }
+          >
+            <FontAwesomeIcon icon={faCheck} />
+          </Button>
+          &nbsp;
+          <ProgressBar
+            style={{ flex: 1 }}
+            min={0}
+            max={100}
+            now={task!.progress!}
+            label={task!.progress! + "%"}
+          />
+        </div>
       ) : (
         <Badge bg="success">
           <FontAwesomeIcon icon={faCheck} />

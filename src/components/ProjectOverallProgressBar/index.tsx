@@ -31,7 +31,7 @@ const ProjectOverallProgressBar: React.FC = () => {
         style={{ height: "20px", width: "100%" }}
         variant={overallProgress >= 100 ? "success" : "primary"}
         now={overallProgress}
-        label={overallProgress >= 100 ? "Completed" : overallProgress + "%"}
+        label={overallProgress >= 100 ? t("completed") : overallProgress + "%"}
       />
     </div>
   );

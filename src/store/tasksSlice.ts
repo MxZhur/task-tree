@@ -495,4 +495,48 @@ export const makeSelectTasksByIds = (tasksIds: string[]) => {
   );
 };
 
+export const makeSelectTaskSubtreeIdsById = (taskId: string | null | undefined) => {
+  return createAppSelector(
+    [selectAllTasks, (_) => taskId],
+    (tasks, tId) => {
+      if (!tId) {
+        return [];
+      }
+
+      let task = tasks.find((el) => el.id === tId);
+
+      if (task === undefined) {
+        return [];
+      }
+
+      // Find all the child tasks recursively, and write down their IDs
+
+      let processedTasksIDs: string[] = [];
+      let result: string[] = [task.id];
+
+      let queue = [task.id];
+
+      while (queue.length > 0) {
+        let processedTaskID = queue.shift();
+
+        let processedTask = tasks.find((el) => el.id === processedTaskID);
+
+        if (processedTask === undefined) {
+          continue;
+        }
+
+        for (let childID of processedTask.childTasks) {
+          if (!processedTasksIDs.includes(childID)) {
+            queue.push(childID);
+            processedTasksIDs.push(childID);
+            result.push(childID);
+          }
+        }
+      }
+
+      return result;
+    }
+  );
+};
+
 export default tasksSlice.reducer;

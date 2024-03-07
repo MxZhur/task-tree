@@ -18,6 +18,7 @@ import {
   addTask,
   makeSelectBlockedTasksIds,
   makeSelectTaskById,
+  makeSelectTaskSubtreeIdsById,
   selectAllTasks,
   selectTopLevelIDs,
   updateTask,
@@ -44,6 +45,8 @@ const TaskForm: React.FC = () => {
 
   const topLevelTasksIDs = useAppSelector(selectTopLevelIDs);
   const allTasks: Task[] = useAppSelector(selectAllTasks);
+
+  const taskSubtreeIds = useAppSelector(makeSelectTaskSubtreeIdsById(taskId));
 
   const defaultNeighborTasksIds = useAppSelector((state) => {
     let parentId: string | null;
@@ -207,7 +210,7 @@ const TaskForm: React.FC = () => {
       <Form onSubmit={handleSubmit}>
         {/* Header */}
         <div
-        className="mb-3"
+          className="mb-3"
           style={{
             display: "flex",
             flexDirection: "row",
@@ -221,7 +224,9 @@ const TaskForm: React.FC = () => {
               {t("taskFormFields.btnSubmit")}
             </Button>
             &nbsp;
-            <Button size="sm" onClick={goBack}>{t("cancel")}</Button>
+            <Button size="sm" onClick={goBack}>
+              {t("cancel")}
+            </Button>
           </div>
         </div>
 
@@ -383,7 +388,7 @@ const TaskForm: React.FC = () => {
               <Form.Label>{t("taskFormFields.labelParentTask")}</Form.Label>
               <TaskPicker
                 taskId={parentTaskId}
-                disabledTasksIds={[task?.id ?? ""]}
+                disabledTasksIds={[task?.id ?? "", ...taskSubtreeIds]}
                 onTaskIdChange={(tId) => changeParentTask(tId)}
                 placeholder={t("taskFormFields.msgParentTaskNone")}
               />

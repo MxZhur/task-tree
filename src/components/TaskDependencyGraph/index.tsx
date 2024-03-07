@@ -5,13 +5,22 @@ import "./index.css";
 import { nanoid } from "@reduxjs/toolkit";
 import {
   TASK_DIFFICULTIES,
+  TASK_PRIORITIES,
   Task,
   makeSelectNeighborTasks,
   selectSelectedTask,
 } from "../../store/tasksSlice";
 import { selectSelectedTaskId } from "../../store/selectedTaskSlice";
+import {
+  GRAPH_COLORING_MODES,
+  selectSettings,
+} from "../../store/settingsSlice";
 
-const getGraphData = (tasks: Task[], selectedTask: string | null = null) => {
+const getGraphData = (
+  tasks: Task[],
+  selectedTaskId: string | null = null,
+  graphColoringMode: string = "off"
+) => {
   const taskIndexes: Record<string, number> = {};
 
   for (let index = 0; index < tasks.length; index++) {
@@ -20,34 +29,74 @@ const getGraphData = (tasks: Task[], selectedTask: string | null = null) => {
     taskIndexes[t.id] = index + 1;
   }
 
+  const selectedTask = tasks.find((t) => t.id === selectedTaskId);
+
   const nodes = tasks.map((t) => {
     let nodeColor = "skyblue";
 
-    switch (t.difficulty) {
-      case TASK_DIFFICULTIES.hard:
-        nodeColor = "#ffbfb3";
-        break;
+    if (graphColoringMode === GRAPH_COLORING_MODES.priority) {
+      switch (t.priority) {
+        case TASK_PRIORITIES.critical:
+          nodeColor = "#ffbfb3";
+          break;
 
-      case TASK_DIFFICULTIES.normal:
+        case TASK_PRIORITIES.high:
+          nodeColor = "#ffffb3";
+          break;
+
+        case TASK_PRIORITIES.medium:
+          nodeColor = "#ccfcda";
+          break;
+
+        case TASK_PRIORITIES.low:
+          nodeColor = "#ccf0fc";
+          break;
+
+        case TASK_PRIORITIES.none:
+          nodeColor = "#dddddd";
+          break;
+
+        default:
+          break;
+      }
+    } else if (graphColoringMode === GRAPH_COLORING_MODES.difficulty) {
+      switch (t.difficulty) {
+        case TASK_DIFFICULTIES.hard:
+          nodeColor = "#ffbfb3";
+          break;
+
+        case TASK_DIFFICULTIES.normal:
+          nodeColor = "#ccfcda";
+          break;
+
+        case TASK_DIFFICULTIES.easy:
+          nodeColor = "#ccf0fc";
+          break;
+
+        default:
+          break;
+      }
+    } else if (graphColoringMode === GRAPH_COLORING_MODES.progress) {
+      if (t.progress !== null && t.progress >= 100) {
         nodeColor = "#ccfcda";
-        break;
-
-      case TASK_DIFFICULTIES.easy:
-        nodeColor = "#ccf0fc";
-        break;
-
-      default:
-        break;
+      }
+    } else if (graphColoringMode === GRAPH_COLORING_MODES.dependencies) {
+      if (
+        selectedTask !== undefined &&
+        selectedTask.dependencyTasks.includes(t.id)
+      ) {
+        nodeColor = "#ffbfb3";
+      }
     }
 
     return {
       id: taskIndexes[t.id],
       label: t.name,
       value: t.id,
-      borderWidth: t.id === selectedTask ? 2 : 1,
+      borderWidth: t.id === selectedTaskId ? 2 : 1,
       color: {
-        background: nodeColor,
-        border: t.id === selectedTask ? "red" : "#2b7ce9",
+        background: t.id === selectedTaskId ? "white" : nodeColor,
+        border: t.id === selectedTaskId ? "red" : "#2b7ce9",
       },
       widthConstraint: {
         maximum: 100,
@@ -76,12 +125,14 @@ const TaskDependencyGraph: React.FC = () => {
 
   const tasks = useAppSelector(makeSelectNeighborTasks(selectedTask));
 
+  const { graphColoringMode } = useAppSelector(selectSettings);
+
   let defaultGraphData;
 
   if (selectedTask === undefined) {
     defaultGraphData = { nodes: [], edges: [] };
   } else {
-    defaultGraphData = getGraphData(tasks, selectedTask.id);
+    defaultGraphData = getGraphData(tasks, selectedTask.id, graphColoringMode);
   }
 
   const [graphData, setGraphData] = useState(defaultGraphData);
@@ -93,7 +144,7 @@ const TaskDependencyGraph: React.FC = () => {
     if (selectedTask === undefined) {
       newGraphData = { nodes: [], edges: [] };
     } else {
-      newGraphData = getGraphData(tasks, selectedTask.id);
+      newGraphData = getGraphData(tasks, selectedTask.id, graphColoringMode);
     }
     setGraphData(newGraphData);
     setGraphKey(nanoid());

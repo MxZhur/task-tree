@@ -95,6 +95,14 @@ i18n
           },
           settingsPage: {
             descriptionExpandedByDefault: "Expand description by default",
+            graphColoringMode: {
+              label: 'Graph Coloring',
+              priority: 'Priority',
+              difficulty: 'Difficulty',
+              progress: 'Progress',
+              dependencies: 'Dependencies',
+              off: 'Off',
+            },
           },
           aboutPage: {
             version: "Version",
@@ -186,6 +194,14 @@ i18n
           },
           settingsPage: {
             descriptionExpandedByDefault: "Раскрывать описание по умолчанию",
+            graphColoringMode: {
+              label: 'Расцветка графа',
+              priority: 'По приоритету',
+              difficulty: 'По сложности',
+              progress: 'По выполнению',
+              dependencies: 'По зависимостям',
+              off: 'Выключена',
+            },
           },
           aboutPage: {
             version: "Версия",

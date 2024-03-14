@@ -173,7 +173,7 @@ const TaskForm: React.FC = () => {
       dispatch(
         addTask({
           name: name.trim(),
-          description: description ?? "",
+          description: description?.trim() ?? "",
           progress,
           priority,
           difficulty,
@@ -189,7 +189,7 @@ const TaskForm: React.FC = () => {
         updateTask({
           id: taskId,
           name: name.trim(),
-          description: description ?? "",
+          description: description?.trim() ?? "",
           progress,
           priority,
           difficulty,

@@ -132,14 +132,15 @@ const TaskDetailsView: React.FC = () => {
             size="sm"
             variant="success"
             title={t("taskFormFields.btnMarkAsDone")}
-            onClick={() =>
+            onClick={() => {
               dispatch(
                 updateProgress({
                   id: task.id,
                   progress: 100,
                 })
-              )
-            }
+              );
+              dispatch(setIsDirty(true));
+            }}
           >
             <FontAwesomeIcon icon={faCheck} />
           </Button>

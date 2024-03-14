@@ -10,13 +10,26 @@ import {
 import Layout from "./components/Layout";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
-import { FILE_EXTENSION, readFile, saveFileAs, saveFileTo } from "./utils/file";
+import {
+  FILE_EXTENSION,
+  getFileBaseName,
+  readFile,
+  saveFileAs,
+  saveFileTo,
+} from "./utils/file";
 import { listen } from "@tauri-apps/api/event";
 import store from "./store";
 import { ask } from "@tauri-apps/api/dialog";
 import { appWindow } from "@tauri-apps/api/window";
 import { useEffect } from "react";
 import i18n from "./i18n/i18n";
+import {
+  isRegistered,
+  register,
+  unregister,
+} from "@tauri-apps/api/globalShortcut";
+import { APP_NAME } from "./utils/appInfo";
+import { changeWindowTitle } from "./utils/window";
 
 const listenToCloseRequest = async () => {
   return appWindow.onCloseRequested(async (event) => {
@@ -68,6 +81,38 @@ const listenToCloseRequest = async () => {
   });
 };
 
+const saveFileShortcut = async () => {
+  const fileIsDirty = store.getState().currentFile.isDirty;
+
+  if (!fileIsDirty) {
+    return;
+  }
+
+  const isNewFile = store.getState().currentFile.isNewFile;
+
+  if (isNewFile) {
+    const fileDialogResult = await saveFileAs();
+
+    if (fileDialogResult === null) {
+      return null;
+    }
+
+    changeWindowTitle(APP_NAME + " - " + getFileBaseName(fileDialogResult));
+
+    return fileDialogResult;
+  } else {
+    const filePath = store.getState().currentFile.filePath;
+
+    if (filePath !== null) {
+      await saveFileTo(filePath);
+    }
+
+    changeWindowTitle(APP_NAME + " - " + getFileBaseName(filePath));
+
+    return filePath;
+  }
+};
+
 function App() {
   const navigate = useNavigate();
 
@@ -91,9 +136,33 @@ function App() {
       }
     );
 
+    isRegistered("CommandOrControl+S").then((isSaveRegistered) => {
+      if (!isSaveRegistered) {
+        register("CommandOrControl+S", () => {
+          saveFileShortcut();
+        });
+      }
+    });
+
+    const unlistenWindowFocus = listen("tauri://focus", async () => {
+      if (!(await isRegistered("CommandOrControl+S"))) {
+        await register("CommandOrControl+S", () => {
+          saveFileShortcut();
+        });
+      }
+    });
+
+    const unlistenWindowBlur = listen("tauri://blur", async () => {
+      if (await isRegistered("CommandOrControl+S")) {
+        await unregister("CommandOrControl+S");
+      }
+    });
+
     return () => {
       unlistenCloseRequest.then((f) => f());
       unlistenFileDrop.then((f) => f());
+      unlistenWindowFocus.then((f) => f());
+      unlistenWindowBlur.then((f) => f());
     };
   }, []);
 

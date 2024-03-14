@@ -21,6 +21,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { clearRecentFiles } from "../../store/recentFilesSlice";
 import { useTranslation } from "react-i18next";
 import { APP_NAME } from "../../utils/appInfo";
+import './index.css';
 
 const WelcomePage: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -80,15 +81,15 @@ const WelcomePage: React.FC = () => {
                 alignItems: "start",
               }}
             >
-              <Button variant="link" onClick={onFileNewClick}>
-                <FontAwesomeIcon icon={faFile} /> {t('welcomePage.newFile')}
+              <Button variant="link" className="welcome-page-btn" onClick={onFileNewClick}>
+                <FontAwesomeIcon className="welcome-page-btn-icon" icon={faFile} /> {t('welcomePage.newFile')}
               </Button>
-              <Button variant="link" onClick={onFileOpenClick}>
-                <FontAwesomeIcon icon={faFolderOpen} /> {t('welcomePage.openFile')}
+              <Button variant="link" className="welcome-page-btn" onClick={onFileOpenClick}>
+                <FontAwesomeIcon className="welcome-page-btn-icon" icon={faFolderOpen} /> {t('welcomePage.openFile')}
               </Button>
               <Link to='/about'>
-                <Button variant="link">
-                  <FontAwesomeIcon icon={faCircleInfo} /> {t('about')}
+                <Button variant="link" className="welcome-page-btn">
+                  <FontAwesomeIcon className="welcome-page-btn-icon" icon={faCircleInfo} /> {t('about')}
                 </Button>
               </Link>
             </div>
